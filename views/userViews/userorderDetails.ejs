@@ -1,0 +1,337 @@
+<%-include('../partial/header')-%>
+
+    <main class="main">
+        <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+            <div class="container">
+                <h1 class="page-title">My Account<span>Shop</span></h1>
+            </div><!-- End .container -->
+        </div><!-- End .page-header -->
+        <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
+            <div class="container">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item"><a href="/userprofile">Profile</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">My Account</li>
+                </ol>
+            </div><!-- End .container -->
+        </nav><!-- End .breadcrumb-nav -->
+
+        <div class="page-content">
+            <div class="dashboard">
+                <div class="container">
+                    <div class="row">
+                        <aside class="col-md-4 col-lg-2">
+                            <ul class="nav nav-dashboard flex-column mb-3 mb-md-0" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="/userprofile">Dashboard</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link " href="/userorder">Orders</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/userAddress">Adresses</a>
+                                </li>
+                                <li class="nav-item">
+									<a class="nav-link" href="/wallet">wallet</a>
+								</li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/useraccount">Account Details</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/logout">Sign Out</a>
+                                </li>
+                            </ul>
+                        </aside><!-- End .col-lg-3 -->
+
+                        <div class="col-md-8 col-lg-10">
+                            <div class="tab-content">
+                                <section class="content-main">
+                                    <div class="content-header">
+                                        <div>
+                                            <h2 class="content-title card-title">Order Details</h2>
+                                            <p>Details for Order ID: #XXXXXXXXXXXXXXX<%=orderDetail._id.toString().slice(-4)%></p>
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <header class="card-header">
+                                            <div class="row align-items-center">
+                                                <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
+                                                    <span>
+                                                        <i class="material-icons md-calendar_today"></i>
+                                                        <b><%- orderDetail.orderDate.toLocaleString("en-US", {
+                                                                weekday: 'short' , month: 'short' , day: 'numeric' ,
+                                                                year: 'numeric' , hour: 'numeric' , minute: 'numeric' ,
+                                                                hour12: true }) %>
+                                                        </b>
+                                                    </span> <br>
+                                                    <small class="text-muted">Order ID: #<%=orderDetail._id%></small>
+                                                </div>
+
+                                            </div>
+                                        </header> <!-- card-header end// -->
+                                        <div class="card-body">
+                                            <div class="row mb-50 mt-20 order-info-wrap">
+                                                <div class="col-md-4">
+                                                    <article class="icontext align-items-start">
+                                                        <span class="icon icon-sm rounded-circle bg-primary-light">
+                                                            <i class="text-primary material-icons md-person"></i>
+                                                        </span>
+                                                        <div class="text">
+                                                            <h6 class="mb-1">Customer</h6>
+                                                            <p class="mb-1">
+                                                                <%=orderDetail.userid.name%> <br>
+                                                                    <%=orderDetail.userid.email%> <br>
+                                                                        <%=orderDetail.userid.phone%>
+                                                            </p>
+                                                            <!-- <a href="#">View profile</a> -->
+                                                        </div>
+                                                    </article>
+                                                </div> <!-- col// -->
+                                                <div class="col-md-4">
+                                                    <article class="icontext align-items-start">
+                                                        <span class="icon icon-sm rounded-circle bg-primary-light">
+                                                            <i
+                                                                class="text-primary material-icons md-local_shipping"></i>
+                                                        </span>
+                                                        <div class="text">
+                                                            <h6 class="mb-1">Order info</h6>
+                                                            <p class="mb-1">
+                                                                Shipping: Fargo express <br> Pay method: card <br>
+                                                                Status: new
+                                                            </p>
+                                                            <!-- <a href="#">Download info</a> -->
+                                                        </div>
+                                                    </article>
+                                                </div> <!-- col// -->
+                                                <div class="col-md-4">
+                                                    <article class="icontext align-items-start">
+                                                        <span class="icon icon-sm rounded-circle bg-primary-light">
+                                                            <i class="text-primary material-icons md-place"></i>
+                                                        </span>
+                                                        <div class="text">
+                                                            <h6 class="mb-1">Deliver to</h6>
+                                                            <p class="mb-1">
+                                                                City: <%=orderDetail.address.city%>,
+                                                                    <%=orderDetail.address.State%>
+                                                                        <br>
+                                                                        <%=orderDetail.address.address%>
+                                                                            <br> Pin: <%=orderDetail.address.Pincode%>
+                                                            </p>
+                                                            <!-- <a href="#">View profile</a> -->
+                                                        </div>
+                                                    </article>
+                                                </div> <!-- col// -->
+                                            </div> <!-- row // -->
+                                            <div class="row">
+                                                <div class="col-lg-7">
+                                                    <div class="table-responsive">
+                                                        <table class="table">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th width="20%">Product</th>
+                                                                    <th width="20%">Name</th>
+                                                                    <th width="20%">Unit Price</th>
+                                                                    <th width="20%">Quantity</th>
+                                                                    <th width="20%">Status</th>
+                                                                    <th width="20%" class="text-end">Total</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <% orderDetail.products.forEach(function(product) { %>
+                                                                    <tr>
+                                                                        <td>
+                                                                            <div class="product">
+                                                                                <figure class="product-media">
+                                                                                    <a href="#">
+                                                                                        <!-- /productView?id=<%=product.productid%> -->
+                                                                                        <% if
+                                                                                            (product.productid.productimage
+                                                                                            ) { %>
+                                                                                            <img src="upload/<%=product.productid.productimage[0] %>"
+                                                                                                class="product-image"
+                                                                                                alt="It" width="50px" />
+                                                                                            <% } else { %>
+                                                                                                <img src="upload/img.webp"
+                                                                                                    alt="Default Image"
+                                                                                                    class="product-image" />
+                                                                                                <% } %>
+
+                                                                                </figure>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <div class="info">
+                                                                                <%=product.productid.productname %>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td> ₹ <%=product.productid.price %>
+                                                                        </td>
+                                                                        <td>
+                                                                            <%=product.quantity %>
+                                                                        </td>
+                                                                        <td>
+                                                                            <%=orderDetail.status %>
+                                                                        </td>
+                                                                        <td class="text-end"> ₹
+                                                                            <%=product.productid.price*product.quantity
+                                                                                %>.00 </td>
+                                                                    </tr>
+                                                                    
+                                                                        <tr>
+                                                                            <td colspan="5">
+                                                                                <article class="float-end">
+                                                                                    <dl class="dlist">
+                                                                                        <dt>Subtotal:</dt>
+                                                                                        <dd>₹
+                                                                                            <%=product.productid.price %>
+                                                                                                .00</dd>
+                                                                                    </dl>
+                                                                                    <%   if(orderDetail.couponCode!=null){%> 
+                                                                                        <dl class="dlist">
+                                                                                        <dt>coupon applied:</dt>
+                                                                                        <dd>₹<%=orderDetail.couponAmount%> (<%=orderDetail.couponCode%>) </dd>
+                                                                                    </dl>
+                                                                                    <% } %>
+                                                                                   
+                                                                                    <dl class="dlist">
+                                                                                        <dt>Shipping cost:</dt>
+                                                                                        <dd>₹ 0.00</dd>
+                                                                                    </dl>
+                                                                                    <dl class="dlist">
+                                                                                        <dt>Grand total:</dt>
+                                                                                        <dd> <b class="h5">₹
+                                                                                                <%=orderDetail.totalAmount%>
+                                                                                                    .00</b> </dd>
+                                                                                    </dl>
+                                                                                    <dl class="dlist">
+                                                                                        <dt class="text-muted">Status:
+                                                                                        </dt>
+                                                                                        <%if(orderDetail.paymentStatus=="Paid"
+                                                                                            ) {%>
+                                                                                            <dd>
+                                                                                                <span
+                                                                                                    class="badge rounded-pill alert-success text-white">Payment
+                                                                                                    done</span>
+                                                                                            </dd>
+                                                                                            <%} else if(orderDetail.paymentStatus=="unpaid") { %>
+                                                                                                <dd>
+                                                                                                    <span
+                                                                                                        class="badge rounded-pill alert-danger text-white">Payment
+                                                                                                        Pending</span>
+                                                                                                </dd>
+                                                                                                <% }else if(orderDetail.paymentStatus=="Refund"){%>
+
+                                                                                                    <%if(orderDetail.status=="Cancelled"){%>
+                                                                                                        <dd>
+                                                                                                    <span
+                                                                                                        class="badge rounded-pill alert-danger text-white">Order Cancelled</span>
+                                                                                                </dd>
+                                                                                                        <%}else{%>
+                                                                                                            <dd>
+                                                                                                    <span
+                                                                                                        class="badge rounded-pill alert-success text-white">Refund to wallet</span>
+                                                                                                </dd>
+                                                                                                            <%}%>
+                                                                                                    
+                                                                                              <%}  else{ %>
+
+                                                                                                    <dd>
+                                                                                                    <span
+                                                                                                        class="badge rounded-pill alert-danger text-white">Order cancelled</span>
+                                                                                                </dd>
+                                                                                                    <%}%>
+                                                                                                <%})%>
+                                                                                    </dl>
+                                                                                </article>
+                                                                            </td>
+                                                                        </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div> <!-- table-responsive// -->
+                                                </div> <!-- col// -->
+                                                <div class="col-lg-1"></div>
+                                                <div class="col-lg-4">
+                                                    <br><br>
+                                                    <div class="box shadow-sm bg-light">
+                                                        <h6 class="">Payment info</h6>
+                                                        <p>
+                                                            <%=orderDetail.PaymentMethod %>
+                                                        </p>
+                                                        <h6 class="">Payment status</h6>
+                                                        <% if (orderDetail.paymentStatus=="Refund" ) { %>
+                                                            <%if(orderDetail.status=="Cancelled"){%>
+                                                                <span class="badge rounded-pill alert-danger">Order Cancelled</span>
+
+                                                                        <%}else{%>
+                                                                                                            
+                                                                    <span class="badge rounded-pill alert-success text-white">Refund to Wallet</span>
+                                                                <%}%>
+                                                           
+                                                            <% } else if (orderDetail.paymentStatus=="Paid" ) { %>
+                                                                <span
+                                                                    class="badge rounded-pill alert-success  text-white">Paid</span>
+                                                                <%} else { %>
+                                                                    <span
+                                                                        class="badge rounded-pill alert-danger text-white">Unpaid</span>
+                                                                    <% } %>
+                                                    </div>
+                                                   
+                                                </div> 
+                                            </div>
+                                        </div> <!-- card-body end// -->
+                                    </div> <!-- card end// -->
+                                </section> <!-- content-main end// -->
+
+
+
+
+
+
+
+                            </div>
+                        </div><!-- End .col-lg-9 -->
+                    </div><!-- End .row -->
+                </div><!-- End .container -->
+            </div><!-- End .dashboard -->
+        </div><!-- End .page-content -->
+    </main><!-- End .main -->
+    <script>
+        $('#statusupdate').on('click', function () {
+            console.log('clicked');
+            var orderid = $(this).data('id')
+            var status = $('.status:checked').text().trim()
+            console.log(status);
+            var data = {
+                "orderid": orderid,
+                "status": status
+            }
+            $.ajax({
+                url: '/admin/statusupdate',
+                method: "post",
+                data: data,
+                success: function (response) {
+                    if (response.message == "1") {
+                        Swal.fire({
+                            title: "Success",
+                            text: "Status updated",
+                            icon: "success",
+                            confirmButtonText: "OK"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = "/admin/order"; // Redirect to another page
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Error",
+                            text: "Something went worng",
+                            icon: "error",
+                            confirmButtonText: "OK"
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+    <%-include('../partial/footer')-%>

@@ -1,0 +1,61 @@
+<%- include('../adminPartial/header') %>
+
+
+
+
+    
+    <section class="content-main">
+        <div class="row">
+            <div class="col-9">
+                <div class="content-header">
+                    <h2 class="content-title">Edit Coupon</h2>
+                </div>
+            </div>
+            <!-- <button class="btn btn-md rounded font-sm hover-up"  type="submit" >Add</button> -->
+            
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                   
+                    <div class="card-body">
+                        
+                        <form action="/admin/editcouponpage"  method="POST"  >
+                            <input type="hidden" name="id" value="<%=coupon._id %>">
+                            <div class="mb-4">
+                                <label for="product_name" class="form-label">Coupon code</label>
+                                <input type="text" name="code" placeholder="Type here" value="<%=coupon.couponCode %>"  class="form-control" >
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="mb-4">
+                                        <label class="form-label">Discount Price</label>
+                                        <div class="row gx-2">
+                                            <input placeholder="₹" name="discountprice" value="<%=coupon.couponAmount %>"  type="text" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-4">
+                                        <label class="form-label">Min Purchase</label>
+                                        <input placeholder="₹" type="text" name="min_purchase" value="<%=coupon.minimumAmount %>"  class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-4">
+                                        <label class="form-label">Expiry</label>
+                                        <input placeholder="" type="date" name="expiry" value="<%=date %>"  class="form-control">
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Description</label>
+                                    <textarea placeholder="Type here" name="coupondescription" class="form-control" rows="4"><%=coupon.couponDescription%></textarea>
+                                </div>
+                            </div>
+                            <button class="btn btn-md rounded font-sm hover-up" type="submit">Update</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<%- include('../adminPartial/footer') %>

@@ -1,0 +1,204 @@
+<%-include('../partial/header')-%>
+	<style>
+		.profile-image {
+			border-radius: 50%;
+			width: 150px;
+			/* Adjust the width and height as needed */
+			height: 150px;
+		}
+	</style>
+	<main class="main">
+		<div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+			<div class="container">
+				<h1 class="page-title">My Account<span>Shop</span></h1>
+			</div><!-- End .container -->
+		</div><!-- End .page-header -->
+		<nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
+			<div class="container">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="/">Home</a></li>
+					<li class="breadcrumb-item"><a href="/userprofile">Profile</a></li>
+					<li class="breadcrumb-item active" aria-current="page">Account Details</li>
+
+				</ol>
+			</div><!-- End .container -->
+		</nav><!-- End .breadcrumb-nav -->
+
+		<div class="page-content">
+			<div class="dashboard">
+				<div class="container">
+					<div class="row">
+						<aside class="col-md-4 col-lg-3">
+							<ul class="nav nav-dashboard flex-column mb-3 mb-md-0" role="tablist">
+								<li class="nav-item">
+									<a class="nav-link " href="/userprofile">Dashboard</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link " href="/userorder">Orders</a>
+								</li>
+
+								<li class="nav-item">
+									<a class="nav-link" href="/userAddress">Adresses</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" href="/wallet">wallet</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link active" href="/useraccount">Account Details</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" href="/logout">Sign Out</a>
+								</li>
+							</ul>
+						</aside><!-- End .col-lg-3 -->
+
+						<div class="col-md-4 col-lg-3 ">
+							<form action="#" enctype="multipart/form-data">
+								<div class="col-lg-4">
+									<img src="/profileimages/<%=data.userprofile %>" class="rounded-circle"
+										style="width: 150px;" alt="Avatar" />
+									<input type="file" id="profilePhoto" name="profilePhoto">
+								</div>
+							</form>
+						</div>
+						<div class="col-md-4 col-lg-3">
+							<div class="col-lg6 " id="imagePreviewContainer" style="display: none;">
+								<img id="imagePreview" src="" class="rounded-circle" style="width: 150px;"
+									alt="Avatar" />
+								<input type="submit" value="upload" id="cropImageBtn">
+							</div>
+
+						</div>
+
+
+
+
+
+
+					</div>
+
+
+
+					<div class="row">
+						<div class="col-lg-3"></div>
+						<div class="col-lg-6">
+
+
+
+							<form action="/userAccountEdit" method="post">
+
+								<h2 class="checkout-title">User Details</h2><!-- End .checkout-title -->
+								<label>Name *</label>
+								<input type="text" class="form-control border-secondary text-dark" name="name"
+									value="<%=data.name %>" readonly>
+
+								<label>Email *</label>
+								<input type="email" class="form-control border-secondary  text-dark" name="email"
+									value="<%=data.email %>" readonly>
+
+
+								<label>Phone *</label>
+								<input type="text" class="form-control border-secondary  text-dark" name="phone"
+									value="<%=data.phone %>" readonly>
+
+
+								<label>Password *</label>
+								<input style="opacity: 0.3;
+								pointer-events: none;
+								background-color: #e2e2e2;" type="password" class="form-control border-secondary  text-dark" name="password"
+									value="<%=data.password %>" readonly>
+						</div><!-- End .row -->
+						<div class="col-lg-3"></div>
+						<div class="col-lg-9">
+							<input type="submit" class="btn btn-primary" value="Edit">
+						</div>
+
+						</form>
+
+
+					</div>
+				</div><!-- End .container -->
+			</div><!-- End .dashboard -->
+		</div><!-- End .page-content -->
+	</main><!-- End .main -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.9/cropper.min.js"></script>
+	<script src="https://unpkg.com/cropperjs"></script>
+	<script>
+		// Wait for the DOM to load
+		document.addEventListener('DOMContentLoaded', function () {
+			const imageInput = document.getElementById('profilePhoto');
+			const imagePreview = document.getElementById('imagePreview');
+			const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+			const cropImageBtn = document.getElementById('cropImageBtn');
+			//const profileinfo = document.getElementById('profileInformation');
+
+			let cropper;
+
+			imageInput.addEventListener('change', function (e) {
+				const file = e.target.files[0];
+
+				const reader = new FileReader();
+				reader.onload = function (event) {
+
+					imagePreview.src = event.target.result;
+					cropper = new Cropper(imagePreview, {
+						aspectRatio: 1,
+						viewMode: 1,
+					});
+
+					imagePreviewContainer.style.display = 'block';
+					//profileinfo.style.display = 'none';
+				};
+				reader.readAsDataURL(file);
+			});
+
+			cropImageBtn.addEventListener('click', function () {
+				console.log("click work");
+				const croppedCanvas = cropper.getCroppedCanvas();
+
+				const croppedDataURL = croppedCanvas.toDataURL('image/jpeg');
+				const croppedBlob = croppedCanvas.toBlob(function (blob) {
+
+					const formData = new FormData();
+					formData.append('profilePhoto', blob, 'cropped.jpg');
+					console.log(formData)
+					$.ajax({
+						url: '/upload-profile-photo',
+						method: 'POST',
+						data: formData,
+						processData: false,
+						contentType: false,
+						success: function (response) {
+							if (response.status) {
+								location.reload();
+							}
+						},
+						error: function (xhr, status, error) {
+
+						}
+					});
+				}, 'image/jpeg');
+			});
+		});
+
+
+
+
+		$("#shopping-address-form").submit((e) => {
+			e.preventDefault();
+			$.ajax({
+				url: '/add-shopping-address',
+				method: 'post',
+				data: $("#shopping-address-form").serialize(),
+				success: (response) => {
+					if (response.status) {
+						location.reload()
+					}
+
+				}
+			})
+		})
+	</script>
+	<%-include('../partial/footer')-%>

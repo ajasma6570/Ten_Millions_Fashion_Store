@@ -1,0 +1,324 @@
+<%- include('../Partial/header') %>
+
+        <main class="main">
+        	<div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+        		<div class="container-fluid">
+        			<h1 class="page-title">Shirts<span>Shop</span></h1>
+        		</div><!-- End .container-fluid -->
+        	</div><!-- End .page-header -->
+            <nav aria-label="breadcrumb" class="breadcrumb-nav ">
+                <div class="container-fluid">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item"><a href="#">shirts</a></li>
+                       
+                    </ol>
+                </div><!-- End .container-fluid -->
+            </nav><!-- End .breadcrumb-nav -->
+
+
+
+            <div class="page-content">
+                <div class="container-fluid">
+        			 <div class="toolbox">  
+        				 <div class="toolbox-left ">
+                            <a href="#" class="sidebar-toggler"><i class="icon-bars"></i>Filters</a>
+        				</div> 
+
+                        
+        				 <div class="toolbox-right">
+        					<div class="toolbox-sort">
+        						<label for="sortby">Sort by:</label>
+        						<div class="select-custom">
+									<select name="sortby" id="sortby" class="form-control" onchange="sortProducts()">
+										<option selected="selected">Price</option>
+										<option >Price Low to High</option>
+										<option >Price High to Low</option>
+									</select>
+								</div>
+        					</div>
+        				</div>
+        			</div>
+
+                    <% if(products){ %>
+
+                    <div class="products mt-5 p-5">
+                        <div class="row">
+                          <% products.reverse().forEach(function(product) { %>
+                          
+                            <div class=" product-item  col-6 col-md-4 col-lg-4 col-xl-3 col-xxl-2" data-category="<%- product.category %>"  data-price="<%= product.price %>">
+                                <div class="product">
+                                    <figure class="product-media">
+                                        <%if(product.productquantity == 0) {%>
+                                            <span class="product-label label-out">Out of Stock</span>
+                                        <%} else {%>
+                                            <%if(product.offerpercentage || product.categorypercentage ){%>
+
+                                                <% if(product.categorypercentage>product.offerpercentage){ %>
+                                                  
+                                                    <span class="product-label label-sale text-end" style="background-color: rgba(255, 115, 0, 0.692);">Category offer <%=product.categorypercentage%>% off</span>
+
+                                                    <% }else{ %>
+                                                    
+                                                        <span class="product-label label-sale text-end"><%=product.offerpercentage%>% off</span>
+
+                                                    <% } %>
+                                                
+                                            <%}%>
+                                        <%}%>
+                                        <a href="/viewproductpage?id=<%= product.id %>">
+                                            <img src="upload/<%= product.productimage[0] %>" alt="Product image" class="product-image">
+                                        </a>
+                    
+                                        <!-- <div class="product-action-vertical">
+                                            <a href="#" class="btn-product-icon btn-wishlist btn-expandable" data-productid="<%= products._id %>" ><span>add to wishlist</span></a>
+                                        </div> -->
+                    
+                                        <div class="product-action action-icon-top" >
+                                            <a href="/addtocart?id=<%= product.id %>" class="btn-product btn-cart" data-productid="<%=product.id %>"><span>add to cart</span></a>
+                                        </div><!-- End .product-action -->
+                                    </figure><!-- End .product-media -->
+                    
+                                    <div class="product-body">
+                                        
+                                        <h3 class="product-title text-uppercase font-weight-bold"><a href="/viewproductpage?id=<%= product.id %>"><%-product.productname %></a></h3><!-- End .product-title -->
+                                        <div class="product-brand">
+                                            <%-product.brand %>
+                                        </div><!-- End .product-price -->
+                                        <div class="product-cat">
+                                            <%- product.category %>
+                                        </div><!-- End .product-cat -->
+                                        <%if(product.offerpercentage || product.categorypercentage ){%>
+                                        
+                                        <% if(product.categorypercentage>product.offerpercentage){ %>
+                                            <s style="color: #eb4b4b;">₹<%=product.price%>.00</s>&nbsp;&nbsp;&nbsp;&nbsp;
+                                            ₹ <%=product.categoryprice%>.00
+
+                                            <% }else{ %>
+                                                <s style="color: #eb4b4b;">₹<%=product.price%>.00</s>&nbsp;&nbsp;&nbsp;&nbsp;
+                                                ₹ <%=product.offerprice%>.00
+
+                                            <% } %>
+
+                                            <% }else{ %>
+                                                <div class="product-price">
+                                                    ₹ <%=product.price%>.00
+                                                </div><!-- End .product-price -->
+
+
+                                                <% } %>
+                                        <div class="ratings-container">
+                                            <div class="ratings">
+                                                <div class="ratings-val" style="width: 0%;"></div><!-- End .ratings-val -->
+                                            </div><!-- End .ratings -->
+                                            <span class="ratings-text">( 0 Reviews )</span>
+                                        </div><!-- End .rating-container -->
+                    
+                                    </div><!-- End .product-body -->
+                                </div><!-- End .product -->
+                            </div><!-- End .col-sm-6 col-lg-4 col-xl-3 -->
+                            <% }); %>
+                        </div>
+                        </div>
+                    
+
+                        <!-- <div class="load-more-container text-center">
+                            <a href="#" class="btn btn-outline-darker btn-load-more">More Products <i class="icon-refresh"></i></a>
+                        </div> -->
+                        
+                        <!-- End .load-more-container -->
+                    <!-- </div> -->
+
+  <!-- *****************************************************************************************************                   -->
+
+                        <% if(category){ %>
+                            <h1 style="color: #535252;">See some similar category products</h1>
+                    <div class="products mt-5 p-5">
+                        <div class="row">
+                            
+                          <% category.forEach(function(product) { %>
+                            <div class=" product-item  col-6 col-md-4 col-lg-4 col-xl-3 col-xxl-2" data-category="<%- product.category %>">
+                                <div class="product">
+                                    <figure class="product-media">
+                                      
+                                        <a href="/viewproductpage?id=<%= product.id %>">
+                                            <img src="upload/<%= product.productimage[0] %>" alt="Product image" class="product-image">
+                                        </a>
+                    
+                                        <div class="product-action-vertical">
+                                            <a href="#" class="btn-product-icon btn-wishlist btn-expandable" data-productid="<%= products._id %>" ><span>add to wishlist</span></a>
+                                        </div><!-- End .product-action -->
+                    
+                                        <div class="product-action action-icon-top" >
+                                            <a href="/addtocart?id=<%= product.id %>" class="btn-product btn-cart" data-productid="<%=product.id %>"><span>add to cart</span></a>
+                                        </div><!-- End .product-action -->
+                                    </figure><!-- End .product-media -->
+                    
+                                    <div class="product-body">
+                                        
+                                        <h3 class="product-title text-uppercase font-weight-bold"><a href="/viewproductpage?id=<%= product.id %>"><%-product.productname %></a></h3><!-- End .product-title -->
+                                        <div class="product-brand">
+                                            <%-product.brand %>
+                                        </div><!-- End .product-price -->
+                                        <div class="product-cat">
+                                            <%- product.category %>
+                                        </div><!-- End .product-cat -->
+                                        <div class="product-price">₹ <%-product.price %>.00
+                                        </div><!-- End .product-price -->
+                                        <div class="ratings-container">
+                                            <div class="ratings">
+                                                <div class="ratings-val" style="width: 0%;"></div><!-- End .ratings-val -->
+                                            </div><!-- End .ratings -->
+                                            <span class="ratings-text">( 0 Reviews )</span>
+                                        </div><!-- End .rating-container -->
+                    
+                                    </div><!-- End .product-body -->
+                                </div><!-- End .product -->
+                            </div><!-- End .col-sm-6 col-lg-4 col-xl-3 -->
+                            <% }); %>
+                        </div>
+                        </div>
+
+                        
+                        <% }else{ %>
+  <!-- *****************************************************************************************************                   -->
+
+
+<% } %>
+
+                <% }else { %>
+
+                    <h1 class="text-center" style="color: #413f3f;">No products to show</h1>
+                    <% } %>
+
+
+                    <div class="sidebar-filter-overlay"></div><!-- End .sidebar-filter-overlay -->
+                    <aside class="sidebar-shop sidebar-filter">
+                        <div class="sidebar-filter-wrapper">
+                            <div class="widget widget-clean">
+                                <label><i class="icon-close"></i>Filters</label>
+                                <a href="#" class="sidebar-filter-clear">Clean All</a>
+                            </div><!-- End .widget -->
+                            <div class="widget widget-collapsible">
+                                <h3 class="widget-title">
+                                    <a data-toggle="collapse" href="#widget-1" role="button" aria-expanded="true" aria-controls="widget-1">
+                                        Category
+                                    </a>
+                                </h3><!-- End .widget-title -->
+
+                               
+
+                                <div class="collapse show" id="widget-1">
+									<div class="widget-body">
+										<div class="filter-items filter-items-count">
+
+											<% categories.forEach(function(category) { %>
+											
+											<div class="filter-item">
+												<div class="">
+													
+													<input type="checkbox"  class="filter-checkbox" id="<%=category.categoryName%>" onchange="filterProducts()">
+													<label class="" for="<%= category.categoryName %>"><%=category.categoryName%></label>
+
+												</div><!-- End .custom-checkbox -->
+												<!-- <span class="item-count">3</span> -->
+											</div><!-- End .filter-item -->
+
+											<% }) %>
+										
+
+
+										</div><!-- End .filter-items -->
+									</div><!-- End .widget-body -->
+								</div><!-- End .collapse -->
+
+
+                            </div><!-- End .widget -->
+
+                            
+
+                            <!-- <div class="widget widget-collapsible">
+                                <h3 class="widget-title">
+                                    <a data-toggle="collapse" href="#widget-3" role="button" aria-expanded="true" aria-controls="widget-3">
+                                        Colour
+                                    </a>
+                                </h3>
+
+                                <div class="collapse show" id="widget-3">
+                                    <div class="widget-body">
+                                        <div class="filter-colors">
+                                            <a href="#" style="background: #b87145;"><span class="sr-only">Color Name</span></a>
+                                            <a href="#" style="background: #f0c04a;"><span class="sr-only">Color Name</span></a>
+                                            <a href="#" style="background: #333333;"><span class="sr-only">Color Name</span></a>
+                                            <a href="#" class="selected" style="background: #cc3333;"><span class="sr-only">Color Name</span></a>
+                                            <a href="#" style="background: #3399cc;"><span class="sr-only">Color Name</span></a>
+                                            <a href="#" style="background: #669933;"><span class="sr-only">Color Name</span></a>
+                                            <a href="#" style="background: #f2719c;"><span class="sr-only">Color Name</span></a>
+                                            <a href="#" style="background: #ebebeb;"><span class="sr-only">Color Name</span></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> -->
+                        </div><!-- End .sidebar-filter-wrapper -->
+                    </aside><!-- End .sidebar-filter -->
+                </div><!-- End .container-fluid -->
+            </div><!-- End .page-content -->
+        </main><!-- End .main -->
+
+
+
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+     
+
+<script>
+     function filterProducts() {
+  const checkboxes = document.querySelectorAll('.filter-checkbox:checked');
+  const selectedCategories = Array.from(checkboxes).map(checkbox => checkbox.id);
+  console.log(selectedCategories);
+  const productItems = document.querySelectorAll('.product-item');
+
+  productItems.forEach(item => {
+    const category = item.dataset.category;
+
+    if (selectedCategories.length === 0 || selectedCategories.includes(category)) {
+      item.style.display = 'block';
+    } else {
+      item.style.display = 'none';
+    }
+  });
+}
+</script>
+
+
+<script>
+    function sortProducts() {
+  const sortSelect = document.getElementById('sortby');
+  const sortValue = sortSelect.value;
+  const productItems = document.querySelectorAll('.product-item');
+
+  const sortedItems = Array.from(productItems).sort((a, b) => {
+    const priceA = parseFloat(a.dataset.price);
+    const priceB = parseFloat(b.dataset.price);
+
+    if (sortValue === 'Price Low to High') {
+      return priceA - priceB;
+    } else if (sortValue === 'Price High to Low') {
+      return priceB - priceA;
+    } else {
+      return 0;
+    }
+  });
+
+  const parentContainer = productItems[0].parentNode;
+
+  sortedItems.forEach(item => {
+    parentContainer.appendChild(item);
+  });
+}
+
+</script>
+
+
+        <%- include('../Partial/footer') %>

@@ -1,0 +1,102 @@
+<%- include('../adminPartial/header') %>
+
+
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">Order List </h2>
+            </div>
+            <!-- <div>
+                <input type="text" placeholder="Search order ID" class="form-control bg-white">
+            </div> -->
+        </div>
+
+        <div class="card ">
+            <div class="card-body">
+
+                <div class="row">
+
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#ID</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">Total</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <%orders.reverse().forEach((order)=>{%>
+
+                                        <tr>
+                                            <td><%- order._id.toString().slice(-4) %></td>
+                                            <td><b>
+                                                    <%=order.userid.name%>
+                                                </b></td>
+                                            <td>
+                                                <%=order.userid.email%>
+                                            </td>
+                                            <td>₹<%=order.totalAmount%>.00</td>
+                                            <% if (order.status=="Delivered" ) { %>
+                                                <td><span class="badge rounded-pill alert-success">
+                                                        <%=order.status%>
+                                                    </span></td>
+                                                <% } else if (order.status=="Pending" ) { %>
+                                                    <td><span class="badge rounded-pill alert-warning">
+                                                            <%=order.status%>
+                                                        </span></td>
+
+                                                    <% } else if (order.status=="Cancelled" ) { %>
+                                                        <td><span class="badge rounded-pill alert-danger">
+                                                                <%=order.status%>
+                                                            </span></td>
+                                                        <%} else { %>
+                                                            <td><span class="badge rounded-pill alert-primary">
+                                                                    <%=order.status%>
+                                                                </span></td>
+                                                            <%}%>
+                                                                <td>
+                                                                    <%=new Date(order.orderDate).toLocaleDateString()%>
+                                                                </td>
+                                                                <td>
+                                                                    <a href="/admin/orderdetails?id=<%=order._id%>"
+                                                                        class="btn btn-md rounded font-sm">Detail</a>
+                                                                    <!-- <div class="dropdown">
+                                        <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item" href="#">View detail</a>
+                                            <a class="dropdown-item" href="#">Edit info</a>
+                                            <a class="dropdown-item text-danger" href="#">Delete</a>
+                                        </div>
+                                    </div> dropdown //end -->
+                                                                </td>
+                                        </tr>
+
+                                        <%})%>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div> <!-- table-responsive //end -->
+            </div> <!-- card-body end// -->
+        </div> <!-- card end// -->
+
+    </section> <!-- content-main end// -->
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.table-hover').DataTable();
+        });
+
+    </script>

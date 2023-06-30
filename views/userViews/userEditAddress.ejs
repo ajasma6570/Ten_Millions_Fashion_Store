@@ -1,0 +1,125 @@
+<%-include('../partial/header')-%>
+
+	<main class="main">
+		<div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+			<div class="container">
+				<h1 class="page-title">My Account<span>Shop</span></h1>
+			</div><!-- End .container -->
+		</div><!-- End .page-header -->
+		<nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
+			<div class="container">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="/">Home</a></li>
+					<li class="breadcrumb-item"><a href="/userprofile">Profile</a></li>
+					<li class="breadcrumb-item active" aria-current="page">My Account</li>
+				</ol>
+			</div><!-- End .container -->
+		</nav><!-- End .breadcrumb-nav -->
+
+		<div class="page-content">
+			<div class="dashboard">
+				<div class="container">
+					<div class="row">
+						<aside class="col-md-4 col-lg-3">
+							<ul class="nav nav-dashboard flex-column mb-3 mb-md-0" role="tablist">
+								<li class="nav-item">
+									<a class="nav-link " href="/userprofile">Dashboard</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link " href="/userorder">Orders</a>
+								</li>
+
+								<li class="nav-item">
+									<a class="nav-link active" href="/userAddress">Adresses</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" href="/useraccount">Account Details</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" href="/logout">Sign Out</a>
+								</li>
+							</ul>
+						</aside><!-- End .col-lg-3 -->
+
+
+						<div class="col-md-8 col-lg-9">
+							<div class="tab-content">
+
+
+
+
+								<form action="/EditUseraddress" method="post">
+									<div class="row">
+										<div class="col-lg-9">
+											<h2 class="checkout-title">Edit Address</h2><!-- End .checkout-title -->
+											<div class="row">
+												<div class="col-sm-12">
+													<input type="hidden" name="id" id="product_title"
+														value="<%=address._id%>">
+													<label>Name *</label>
+													<input type="text" placeholder="<%=address.name %>"
+														class="form-control" name="name" value="<%=address.name %>">
+												</div><!-- End .col-sm-6 -->
+
+
+											</div><!-- End .row -->
+
+											<label>Address*</label>
+											<input type="text" placeholder="<%=address.address %>" class="form-control"
+												value="<%=address.address %>" name="address">
+
+											<div class="row">
+												<div class="col-sm-6">
+													<label>City*</label>
+													<input type="text" placeholder="<%=address.city %>"
+														class="form-control" name="city" value="<%=address.city %>">
+												</div><!-- End .col-sm-6 -->
+
+												<div class="col-sm-6">
+													<label>State*</label>
+													<input type="text" placeholder="<%=address.State %>"
+														class="form-control" name="state" value="<%=address.State %>">
+												</div><!-- End .col-sm-6 -->
+											</div><!-- End .row -->
+
+
+
+											<div class="row">
+												<div class="col-sm-6">
+													<label>Pincode*</label>
+													<input type="text" placeholder="<%=address.Pincode %>"
+														class="form-control" name="pincode"
+														value="<%=address.Pincode %>">
+												</div><!-- End .col-sm-6 -->
+
+												<div class="col-sm-6">
+													<label>Phone Number *</label>
+													<input type="tel" placeholder="<%=address.phone %>"
+														class="form-control" name="phonenumber"
+														value="<%=address.phone %>">
+												</div><!-- End .col-sm-6 -->
+											</div><!-- End .row -->
+
+											<label>Landmark *</label>
+											<input type="text" placeholder="<%=address.landmark %>" class="form-control"
+												name="landmark" value="<%=address.landmark %>">
+
+											<input type="submit" class="btn btn-primary" value="Add Address">
+
+
+										</div><!-- End .col-lg-9 -->
+
+									</div><!-- End .row -->
+								</form>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div><!-- End .col-lg-9 -->
+		</div><!-- End .row -->
+
+
+	</main><!-- End .main -->
+
+	<%-include('../partial/footer')-%>

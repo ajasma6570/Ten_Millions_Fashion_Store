@@ -1,0 +1,144 @@
+<%- include('../adminPartial/header') %>
+
+<div class="content-header">
+    <div>
+        <h2 class="content-title card-title">Products List</h2>
+    </div>
+    <div>
+        <!-- <a href="#" class="btn btn-light rounded font-md">Export</a>
+        <a href="#" class="btn btn-light rounded  font-md">Import</a> -->
+        <a href="/admin/addproduct" class="btn btn-primary btn-sm rounded">Add Product</a>
+    </div>
+</div>
+<!-- <h2 class="content-title">Product List</h2>
+<button class="btn btn-success ">
+    <a href="/admin/addproduct" style="color: white">Add Product</a></button> -->
+    <div class="col-md-12">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Quantity</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Description</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>                <%product.reverse().forEach(function(product){%>
+                    <tr>
+                        <td> <img src="upload/<%=product.productimage[0]%>" class="img-sm img-thumbnail" alt="Item"></td>
+                        <td> <h6 class="mb-0"><%-product.productname%></h6> </td>
+                        <td> <span class="badge rounded-pill alert-success"><%-product.quantity%></span></td>
+                        <td><span class="badge rounded-pill alert-success"><%-product.category%></span></td>
+                        <td><span class="badge rounded-pill alert-success"><%-product.price%></span></td>
+                        <td><span><%-product.description%></span></td>
+                        <td> <a href="/admin/updateproduct?id=<%=product._id %>" class="btn btn-sm font-sm rounded btn-brand">
+                            <i class="material-icons md-edit"></i> Edit
+                        </a></td>
+                        <td><a href="/admin/delete?id=<%=product._id %>" class="btn btn-sm font-sm btn-danger rounded">
+                            <i class="material-icons md-delete_forever"></i> Delete
+                        </a></td>
+                    </tr>
+                    <% });%>  
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+    
+    
+    <!-- <span style="margin-left: 30px;">Image</span><span style="margin-left: 30px;">Name</span><span style="margin-left: 55px;" >Quantity</span><span style="margin-left: 110px;">Category</span><span style="margin-left: 110px;">Price</span><span style="margin-left: 130px;">Description</span><span style="margin-left: 110px;">Edit</span><span style="margin-left: 50px;">Delete</span>
+                <div class="card-body">
+    <%product.reverse().forEach(function(product){%> 
+                    <article class="itemlist">
+                        <div class="row align-items-center">
+                          
+                            <div class="col-lg-2 col-sm-2 col-8 flex-grow-1 col-name">
+                                <a class="itemside" href="#">
+                                    <div class="left">
+                                        <img src="upload/<%=product.productimage[0]%>" class="img-sm img-thumbnail" alt="Item"> 
+                                    </div>
+                                    <div class="info">
+                                        <h6 class="mb-0"><%-product.productname%></h6>
+                                    </div>
+                                </a>
+                            </div>
+                           
+                            <div class="col-lg-2 col-sm-2 col-4 col-status">
+                                <span class="badge rounded-pill alert-success"><%-product.quantity%></span>
+                            </div>
+                            <div class="col-lg-2 col-sm-2 col-4 col-status">
+                                <span class="badge rounded-pill alert-success"><%-product.category%></span>
+                            </div>
+                            <div class="col-lg-2 col-sm-2 col-4 col-status">
+                                <span class="badge rounded-pill alert-success"><%-product.price%></span>
+                            </div>
+                            <div class="col-lg-2 col-sm-2 col-4 col-date">
+                                <span><%-product.description%></span>
+                            </div>
+                            <div class="col-lg- col-sm-2 col-4 col-action text-end">
+                                <a href="/admin/updateproduct?id=<%=product._id %>" class="btn btn-sm font-sm rounded btn-brand">
+                                    <i class="material-icons md-edit"></i> Edit
+                                </a>
+                                <a href="/admin/delete?id=<%=product._id %>" class="btn btn-sm font-sm btn-danger rounded">
+                                    <i class="material-icons md-delete_forever"></i> Delete
+                                </a>
+                            </div>
+                        </div> 
+                    </article> 
+               <% });%>    
+               
+                    
+            </div>  -->
+        
+      
+     
+    </main>
+    <script src="asset/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="asset/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="asset/js/vendors/select2.min.js"></script>
+    <script src="asset/js/vendors/perfect-scrollbar.js"></script>
+    <script src="asset/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <script src="asset/js/main.js" type="text/javascript"></script>
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.js"></script>
+    
+    <% if (locals.notice) { %>
+        <script>
+          Swal.fire({
+            icon: 'error',
+            title: '<%=notice%>',
+            showConfirmButton: false,
+            timer: 2000
+          });
+        </script>
+        <% } %> 
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
+
+        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
+
+        <script>
+            $(document).ready(function() {
+                $('.table-hover').DataTable();
+              });
+              
+            </script>
+     
+</body>
+
+
+<!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-products-list.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:12 GMT -->
+</html>

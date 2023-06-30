@@ -1,0 +1,228 @@
+<%-include('../partial/header')-%>
+  
+
+        <main class="main">
+        	<div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+        		<div class="container">
+        			<h1 class="page-title">Shopping Cart<span>Shop</span></h1>
+        		</div><!-- End .container -->
+        	</div><!-- End .page-header -->
+            <nav aria-label="breadcrumb" class="breadcrumb-nav">
+                <div class="container">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/shirts">Shop</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Shopping Cart</li>
+                    </ol>
+                </div><!-- End .container -->
+            </nav><!-- End .breadcrumb-nav -->
+
+            <div class="page-content">
+            	
+	                
+						<div class="container">
+							<div class="row justify-content-center">
+								
+							  <div class=" page-title">
+								<img src="/upload/order 1.png" class="img-fluid" alt="Centered Image" style="height: 100px;width: 100px;">
+							  </div>
+							 
+							</div>
+						  </div>
+						  <div>
+							<h1 class="text-center" style="color: #22bd7e;" >Order Placed, Thank you!</h1>
+						  </div>
+						<hr>
+
+
+						<div class="container">
+							<div class="row">
+								<div class="col-lg-3"></div>
+							<div class="box col-lg-3">
+								<p>Your estimated delivery date is:</p>
+								<p style="color: black;font-weight: 600;">Tuesday, June 20,2023 - Friday 23,2023 </p>
+								<br>
+								<p>Your Shhipping Speed:</p>
+								<p style="color: black;font-weight: 600;">Standard</p>
+							</div>
+							<div class="col-lg-3"></div>
+							<div  class="col-lg-3">
+								<% order.products.forEach(function(product) { %>  
+									<img src="upload/<%=product.productid.productimage[0] %>" class="product-image" alt="It" style="width: 100px; height: 100px;"  />
+									<%})%>
+								
+								<a href="/userorder"><input type="button" class="btn btn-success" value="view Orders"></a>
+							</div>
+					
+						
+						<!-- <table>
+							<thead>
+							
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										<p>Your estimated delivery date is:</p>
+									</td>
+								</tr>
+								<tr>
+								<td>
+									<p style="font-weight: 500;">Tuesday, June 20,2023 - Friday 23,2023 </p>
+
+								</td>
+								</tr>
+							</tbody>
+						</table> -->
+					</div>
+				</div>
+						<div class="container">
+						
+	                	<div class="row">
+	                		<div class="col-lg-9">
+	                			
+
+	                			<div class="cart-bottom ">
+			            			
+
+		            			</div><!-- End .cart-bottom -->
+	                		</div><!-- End .col-lg-9 -->
+
+	                	<!-- <aside class="col-lg-3">
+	                			<div class="summary summary-cart">
+	                				<h3 class="summary-title">Cart Total</h3>
+
+	                			 <table class="table table-summary">
+	                					<tbody>
+	                						<tr class="summary-subtotal">
+	                							<td>Subtotal:</td>
+	                							<td class="total"></td>
+	                						</tr>
+	                						<tr class="summary-shipping">
+	                							<td>Shipping:</td>
+	                							<td>Free shipping</td>
+	                						</tr>
+
+	                						
+
+	                						<tr class="summary-shipping-estimate">
+	                							<td>Estimate for Your Country<br> <a href="dashboard.html">Change address</a></td>
+	                							<td>&nbsp;</td>
+	                						</tr>
+
+	                						<tr class="summary-total">
+	                							<td>Total:</td>
+	                							<td class="total"></td>
+	                						</tr>
+	                					</tbody>
+	                				</table> 
+	                				<a href="/checkout" class="btn btn-outline-primary-2 btn-order btn-block">PROCEED TO CHECKOUT</a>
+	                			</div>
+
+		            			<a href="/" class="btn btn-outline-dark-2 btn-block mb-3"><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
+	                		</aside> -->
+	                	</div> 
+					
+						
+	                </div><!-- End .container -->
+                
+            </div><!-- End .page-content -->
+        </main><!-- End .main -->
+
+
+
+		<script src="https://code.jquery.com/jquery-3.6.4.slim.js" integrity="sha256-dWvV84T6BhzO4vG6gWhsWVKVoa4lVmLnpBOZh/CAHU4=" crossorigin="anonymous"></script>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.js"></script>
+		
+
+
+		<script>
+          
+$(document).ready(function(){
+  update_amounts();
+  
+  // Handle quantity changes
+  $('.qty,.price').on('keyup keypress blur change', function(e){
+    update_amounts();
+  });
+  
+  // Handle increment/decrement buttons
+  $('.cart-qty-plus').on('click', function(){
+	console.log("clicked");
+	var proID = $(this).data('proid')
+     var input = $(this).siblings('.qty');
+	var qty = $(this).siblings('.qty').val();
+	var data = {quantity:qty,proID:proID}
+  	
+	//with incrementing the quatity number ajax call
+	$.ajax({
+		url:'/incrementproduct',
+		method:"post",
+		data:data,
+		success: function(response){
+		console.log(response.message);
+		 if(response.message == "0"){
+		// if response is zero it means product Quantity is unavailable
+			console.log("failed");
+			Swal.fire({
+                            title: "Error",
+                            text: "Item is Out of Stoke",
+                            icon: "error",
+                            confirmButtonText: "OK"
+                        }); 
+		 }else{
+			
+          var val = parseInt(input.val());
+          input.val(val + 1);
+          update_amounts();
+		 }
+		}
+	})
+
+  });
+
+ 		 $(".cart-qty-minus").on("click", function () {
+                console.log("clicked");
+                var proID = $(this).data("proid");
+                var input = $(this).siblings(".qty");
+				var qty = $(this).siblings('.qty').val();
+                var data = {quantity:qty,proID:proID}
+				
+                $.ajax({
+                url: '/decrement',                    
+                method: "post",
+				data:data,
+                success: function (response) {
+                    if (response.message == "0"){
+                    Swal.fire({
+                        title: "Error",
+                        html: "Product quantity cannot be less than 1,<br> You can delete product.",
+                        icon: "error",
+                        confirmButtonText: "OK",
+                    });
+                    } else {
+                    var val = parseInt(input.val());
+                    input.val(val - 1);
+                    update_amounts();
+                    }
+                },
+                });
+
+				});
+
+			});
+
+function update_amounts(){
+  var sum = 0.0;
+  $('#myTable > tbody > tr').each(function(){
+    var qty = $(this).find('.qty').val();
+    var price = $(this).find('.price').text().replace(/[^\d\.]/g, '');
+    var amount = qty * price;
+    sum += amount;
+    $(this).find('.amount').text('₹' + amount.toFixed(2));
+  });
+  $('.total').text('₹' + sum.toFixed(2));
+}
+        </script>
+
+        <%-include('../partial/footer')-%>

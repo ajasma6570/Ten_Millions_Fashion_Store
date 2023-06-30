@@ -1,0 +1,215 @@
+<%-include('../partial/header')-%>
+
+	<main class="main">
+		<div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+			<div class="container">
+				<h1 class="page-title">My Account<span>Shop</span></h1>
+			</div><!-- End .container -->
+		</div><!-- End .page-header -->
+		<nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
+			<div class="container">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="/">Home</a></li>
+					<li class="breadcrumb-item"><a href="/userprofile">Profile</a></li>
+					<li class="breadcrumb-item active" aria-current="page">user Account</li>
+					<li class="breadcrumb-item active" aria-current="page">user Account edit</li>
+				</ol>
+			</div><!-- End .container -->
+		</nav><!-- End .breadcrumb-nav -->
+
+		<div class="page-content">
+			<div class="dashboard">
+				<div class="container">
+					<div class="row">
+						<aside class="col-md-4 col-lg-3">
+							<ul class="nav nav-dashboard flex-column mb-3 mb-md-0" role="tablist">
+								<li class="nav-item">
+									<a class="nav-link " href="/userprofile">Dashboard</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link " href="/userorder">Orders</a>
+								</li>
+
+								<li class="nav-item">
+									<a class="nav-link" href="/userAddress">Adresses</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" href="/wallet">wallet</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link active" href="/useraccount">Account Details</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" href="/logout">Sign Out</a>
+								</li>
+							</ul>
+						</aside><!-- End .col-lg-3 -->
+
+
+
+						<div class="col-lg-6">
+							<form onsubmit="return validate()" action="/userEditSucess" method="post">
+
+								<h2 class="checkout-title">User Details</h2><!-- End .checkout-title -->
+
+								<div class="form-group ">
+									<label>Name *</label>
+									<input type="text" class="form-control border-secondary text-dark" id="Editname"
+										name="name" value="<%=data.name %>">
+									<label style="display: none;" id="fname-error"></label>
+								</div>
+
+								<div class="form-group">
+									<label>Email *</label>
+									<input type="email" class="form-control border-secondary  text-dark" id="Editemail"
+										name="email" value="<%=data.email %>">
+									<label style="display: none;" id="email-error"></label>
+								</div>
+
+								<div class="form-group ">
+									<label>Phone *</label>
+									<input type="text" class="form-control border-secondary  text-dark" id="Editphone"
+										name="phone" value="<%=data.phone %>">
+									<label style="display: none;" id="phone-error"></label>
+								</div>
+
+								<div class="form-group">
+									<label>Password *</label>
+									<input style="opacity: 0.3;
+														pointer-events: none;
+														background-color: #f0f0f0;" type="password" class="form-control border-secondary  text-dark"
+										id="Editpassword" name="password" value="<%=data.password %>" readonly>
+									<label style="display: none;" id="password-error"></label>
+								</div>
+
+								<div class="form-group ">
+									<label>Confirm Password *</label>
+									<input style="opacity: 0.3;
+														pointer-events: none;
+														background-color: #f0f0f0;" type="password" class="form-control border-secondary  text-dark"
+										id="Editcpassword" name="Cpassword" value="<%=data.password %>" readonly>
+									<span id="message"></span>
+								</div>
+
+
+						</div><!-- End .row -->
+						<div class="col-lg-3"></div>
+						<div class="col-lg-9">
+							<input type="submit" class="btn btn-primary" value="Save">
+							<a href="/forgetpassword"><input type="button" class="btn btn-primary"
+									value="Change Password"></a>
+						</div>
+						</form>
+
+					</div><!-- End .container -->
+				</div><!-- End .dashboard -->
+			</div><!-- End .page-content -->
+	</main><!-- End .main -->
+
+
+	<script>const myDiv = document.getElementById('message');
+		setTimeout(function () {
+			myDiv.innerHTML = '';
+		}, 3000);</script>
+
+	<script>
+		function confirmSave() {
+			// Display the confirmation dialog
+			var result = confirm("Are you sure you want to save?");
+
+			if (result) {
+				return true
+			}
+			// If the user clicks "Cancel" (false), prevent form submission
+			return false;
+		}
+	</script>
+
+	<script>
+		function checkPassword() {
+			let password = document.getElementById("Editpassword").value;
+			let confirmPassword = document.getElementById("Editcpassword").value;
+			console.log("Password:", password, "\n", "Confirm Password:", confirmPassword);
+			let message = document.getElementById("message");
+
+			if (password.length !== 0) {
+				if (password === confirmPassword) {
+					return confirmSave()
+				} else {
+					message.style.display = ''
+					message.textContent = "Passwords don't match";
+					message.style.color = "#ff4d4d";
+					return false; // Prevent form submission
+				}
+			} else {
+				message.textContent = "Password can't be empty!";
+				message.style.color = "#ff4d4d";
+				return false; // Prevent form submission
+			}
+		}
+		function validate() {
+
+			console.log("started");
+			var name = document.getElementById("Editname").value.trim();
+			var email = document.getElementById("Editemail").value.trim();
+			var phone = document.getElementById("Editphone").value.trim();
+			var password = document.getElementById("Editpassword").value.trim();
+			var confirmPassword = document.getElementById("Editcpassword").value.trim();
+
+			var nameFormat = /^[a-zA-Z ]+$/;
+			var emailFormat = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+			var phoneFormat = /^\d{10}$/;
+			let nameError = document.getElementById("fname-error");
+			let emailError = document.getElementById("email-error");
+			let phoneError = document.getElementById("phone-error");
+			let passwordError = document.getElementById("password-error");
+
+			if (!name.match(nameFormat)) {
+				nameError.style.display = '';
+				nameError.textContent = "Enter Correct Name!";
+				nameError.style.color = "#ff4d4d";
+				return false;
+			} else {
+				nameError.style.display = 'none';
+			}
+
+			if (!email.match(emailFormat)) {
+				emailError.style.display = '';
+				emailError.textContent = "Invalid Email Address!";
+				emailError.style.color = "#ff4d4d";
+				return false;
+			} else {
+				emailError.style.display = 'none';
+			}
+
+			if (!phone.match(phoneFormat)) {
+				phoneError.style.display = '';
+				phoneError.textContent = "Enter Valid Phone Number!";
+				phoneError.style.color = "#ff4d4d";
+				return false;
+			} else {
+				phoneError.style.display = 'none';
+			}
+
+			if (password.length < 6) {
+				passwordError.style.display = '';
+				passwordError.textContent = "Password should be at least 6 characters!";
+				passwordError.style.color = "#ff4d4d";
+				return false;
+			} else {
+				passwordError.style.display = 'none';
+			}
+
+			return checkPassword();
+		}
+
+
+	</script>
+
+
+	<script>
+		// Add an event listener to the form submission
+		var form = document.querySelector('form');
+		form.addEventListener('submit', confirmSave);
+	</script>
+	<%-include('../partial/footer')-%>
