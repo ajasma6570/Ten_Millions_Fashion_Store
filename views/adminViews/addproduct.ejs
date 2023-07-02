@@ -39,7 +39,6 @@
                                 </div>
                             </div> 
                             <div class="mb-4">
-                               <!--  <label for="product_brand" class="form-label">Brand</label> -->
                                 <input type="hidden" placeholder="Type here" class="form-control" name="brand"  id="product_brand" value="Ten millions" >
                             </div>
                             <div class="mb-4">
@@ -112,35 +111,11 @@
         <script>
 				
             function validate() {
-                
-        //   var name = document.getElementById("product_brand").value.trim();
           var quantity = document.getElementById("quantity").value.trim();
-        //   var price = document.getElementById("phone").value.trim();
-
-          console.log(name);
-          console.log(pincode);
-          console.log(phone);
-         
-        //   var nameFormat = /^[a-zA-Z ]+$/;
           var quantityFormat = /^\d+$/;
-        //   var priceFormat = /^\d{10}$/;
-        
 
-
-
-        //   let nameError = document.getElementById("fname-error");
           let quantityError = document.getElementById("quantity-error");
-        //   let priceError = document.getElementById("price-error");
-        
-        //   if (!name.match(nameFormat)) {
-        //     nameError.style.display = '';
-        //     nameError.textContent = "Enter Correct Name!";
-        //     nameError.style.color = "#ff4d4d";
-        //     return false;
-        //   } else {
-        //     nameError.style.display = 'none';
-        //   }
-
+       
           if (!quantity.match(quantityFormat)) {
             quantityError.style.display = '';
             quantityError.textContent = "Enter Valid Pincode!";
@@ -149,16 +124,6 @@
           } else {
             quantityError.style.display = 'none';
           }
-        
-                
-        //   if (!price.match(priceFormat)) {
-        //     priceError.style.display = '';
-        //     priceError.textContent = "Enter Valid Phone Number!";
-        //     priceError.style.color = "#ff4d4d";
-        //     return false;
-        //   } else {
-        //     priceError.style.display = 'none';
-        //   }
         
           return true;
 
@@ -171,6 +136,4 @@
 
 
 
-
-<!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-form-product-3.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:32 GMT -->
 </html>

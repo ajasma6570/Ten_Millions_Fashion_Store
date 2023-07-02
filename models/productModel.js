@@ -50,7 +50,11 @@ const productSchema=new mongoose.Schema({
     categoryprice: {
       type: Number,
       default: 0,
-    }
+    },
+    isDelete: {
+        type: Boolean,
+        default: false,
+      }
 })
 
 function arrayLimit(val){

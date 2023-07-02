@@ -1,87 +1,97 @@
 <%- include('../adminPartial/header') %>
-        <section class="content-main">
-            <div class="content-header">
-                <div>
-                    <h2 class="content-title card-title">Categories </h2>
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">Categories </h2>
 
-                </div>
-                <div >
-                    <a href="/admin/addcategories"> <button class="btn btn-primary">Add category</button></a>
-                 </div>
             </div>
-           
-            <div class="card">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">
-                                            </th>
-                                          
-                                            <th>Name</th>
-                                            <th>Description</th>
-                                            <th>Edit</th>
-                                            <th>Delete</th>
-                                            <th>List/Unlist</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <% count=1 %>   
+            <div>
+                <a href="/admin/addcategories"> <button class="btn btn-primary">Add category</button></a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">
+                                        </th>
+
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                        <th>List/Unlist</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% count=1 %>
                                         <% category.reverse().forEach(function(category) { %>
                                             <tr>
-                                              <td><%=count%></td>
-                                              <td> <%= category.categoryName %></td>
-                                              <td> <%= category.categoryDescription%></td> 
-                                              <td> <a href="/admin/categoryedit?id=<%=category._id%>"><button type="button"  class="btn btn-info">Edit</button></a></td>
-                                             <td><a href="/admin/deletecategory?id=<%=category._id%>"><imput type="sumbit"  class="btn btn-danger">Delete</a></td> 
-                                              <td >
-                                                <a href="/admin/list?id=<%= category._id %>">
-                                                    <% if (category.list==1) { %>
-                                                    <button type="button" class="btn btn-danger" >UnList</button>
-                                                    <% } else { %>
-                                                    <button type="button" class="btn btn-success" >List</button>
-                                                    <% } %>
-                                                </a>
-                                            </td>
+                                                <td>
+                                                    <%=count%>
+                                                </td>
+                                                <td>
+                                                    <%= category.categoryName %>
+                                                </td>
+                                                <td>
+                                                    <%= category.categoryDescription%>
+                                                </td>
+                                                <td> <a href="/admin/categoryedit?id=<%=category._id%>"><button
+                                                            type="button" class="btn btn-info">Edit</button></a></td>
+                                                <td><a href="/admin/deletecategory?id=<%=category._id%>">
+                                                        <imput type="sumbit" class="btn btn-danger">Delete
+                                                    </a></td>
+                                                <td>
+                                                    <a href="/admin/list?id=<%= category._id %>">
+                                                        <% if (category.list==1) { %>
+                                                            <button type="button" class="btn btn-danger">UnList</button>
+                                                            <% } else { %>
+                                                                <button type="button"
+                                                                    class="btn btn-success">List</button>
+                                                                <% } %>
+                                                    </a>
+                                                </td>
                                             </tr>
-                                           <% count++ %>
-                                           <% }); %>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div> <!-- .col// -->
-                    </div> <!-- .row // -->
-                </div> <!-- card body .// -->
-            </div> <!-- card .// -->
-        </section> <!-- content-main end// -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.js"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.js"></script>
-        
-        <% if (locals.notice) { %>
-            <script>
-              Swal.fire({
+                                            <% count++ %>
+                                                <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div> <!-- .col// -->
+                </div> <!-- .row // -->
+            </div> <!-- card body .// -->
+        </div> <!-- card .// -->
+    </section> <!-- content-main end// -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.js"></script>
+
+    <% if (locals.notice) { %>
+        <script>
+            Swal.fire({
                 icon: '<%=icon%>',
                 title: '<%=notice%>',
                 showConfirmButton: false,
                 timer: 2000
-              });
-            </script>
-            <% } %> 
-           
-           
+            });
+        </script>
+        <% } %>
+
+
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
             <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
             <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
-    
+
             <script>
-                $(document).ready(function() {
+                $(document).ready(function () {
                     $('.table-hover').DataTable();
-                  });
-                  
-                </script>
+                });
+
+            </script>

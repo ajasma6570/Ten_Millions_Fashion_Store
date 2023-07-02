@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 const otp = require("../models/OTPmodel");
 const collection = require("../models/userModel");
 const otpGenerator = require("otp-generator");
@@ -12,10 +11,9 @@ const useraddress = require("../models/addressModel");
 const cart = require("../models/cartModel");
 const orderModel = require("../models/orderModel");
 const Razorpay = require("razorpay");
-const multer = require("multer");
-const path = require("path");
 const couponModel = require("../models/couponModel");
 const walletModel = require("../models/walletModel");
+const multerhelper = require("../helper/multerConfig");
 
 const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
 const razorpayInstance = new Razorpay({
@@ -23,39 +21,39 @@ const razorpayInstance = new Razorpay({
   key_secret: RAZORPAY_SECRET_KEY,
 });
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./public/profileimages");
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
-});
-const upload = multer({ storage });
-
 const user = {
-  //***********************************Dashbord********************************************
-
+  // Render the homepage with user data if logged in, otherwise render without user data
   homepage: async (req, res) => {
     try {
+      const data = await collection.findOne({ email: req.session.userid });
+      const pro = await product.find({isDelete: false }).limit(4);
       if (req.session.userid) {
-        const data = await collection.findOne({ email: req.session.userid });
-        res
-          .status(200)
-          .render("homepage", {
-            title: "Hi, " + data.name,
-            session: req.session.userid,
-          });
+        res.status(200).render("homepage", {
+          title: "Hi, " + data.name,
+          session: req.session.userid,
+          products: pro,
+        });
       } else {
-        res.status(200).render("homepage");
+        res.status(200).render("homepage", { products: pro });
       }
     } catch (error) {
       res.status(404).render("error", { error: error.message });
     }
   },
 
-  //***********************************Login controller********************************************
+  // Render the homepage with user data
+  home: async (req, res) => {
+    const { userid } = req.session;
+    let userdata = await collection.findOne({ email: userid });
+    const pro = await product.find({isDelete: false }).limit(4);
+    res.status(200).render("homepage", {
+      title: "Hi, " + userdata.name,
+      session: userid,
+      products: pro,
+    });
+  },
 
+  // Render the login page with an optional notice message
   login: (req, res) => {
     try {
       const notice = req.flash("notice");
@@ -65,6 +63,7 @@ const user = {
     }
   },
 
+  // Handle user login request
   userlogin: async (req, res) => {
     try {
       let userdata = await collection.findOne({ email: req.body.loginEmail });
@@ -72,14 +71,7 @@ const user = {
         if (userdata.block === 0) {
           if (userdata.password === req.body.loginPassword) {
             req.session.userid = req.body.loginEmail;
-            const productdata = await product.find({});
-            res
-              .status(200)
-              .render("homepage", {
-                title: "Hi, " + userdata.name,
-                session: req.session.userid,
-                product: productdata,
-              });
+            res.redirect("/home");
           } else {
             res.status(200).render("login", { notice: "Password incorrect" });
           }
@@ -93,23 +85,23 @@ const user = {
       res.status(404).render("error", { error: error.message });
     }
   },
-  //***********************************user Dashboard controller********************************************
+
+  // Render the user profile page
   userprofile: async (req, res) => {
     try {
       const userdetail = await collection.findOne({
         email: req.session.userid,
       });
-      res
-        .status(200)
-        .render("userDashboard", {
-          session: req.session.userid,
-          title: "Hi, " + userdetail.name,
-        });
+      res.status(200).render("userDashboard", {
+        session: req.session.userid,
+        title: "Hi, " + userdetail.name,
+      });
     } catch (error) {
       res.status(404).render("error", { error: error.message });
     }
   },
 
+  // Render the user order history page with user data, addresses, and orders
   userorder: async (req, res) => {
     try {
       const userdetail = await collection.findOne({
@@ -122,67 +114,65 @@ const user = {
         .populate("address")
         .exec();
 
-      res
-        .status(200)
-        .render("userorder", {
-          session: req.session.userid,
-          title: "Hi, " + userdetail.name,
-          address: addressdetails,
-          orders: orders,
-        });
+      res.status(200).render("userorder", {
+        session: req.session.userid,
+        title: "Hi, " + userdetail.name,
+        address: addressdetails,
+        orders: orders,
+      });
     } catch (error) {
       res.status(404).render("error", { error: error.message });
     }
   },
+
+  // Render the user address page with user data and addresses
   userAddress: async (req, res) => {
     try {
       const userdetail = await collection.findOne({
         email: req.session.userid,
       });
       const addressdetails = await useraddress.find({ userid: userdetail._id });
-      res
-        .status(200)
-        .render("userAddress", {
-          session: req.session.userid,
-          title: "Hi, " + userdetail.name,
-          address: addressdetails,
-        });
+      res.status(200).render("userAddress", {
+        session: req.session.userid,
+        title: "Hi, " + userdetail.name,
+        address: addressdetails,
+      });
     } catch (error) {
       res.status(404).render("error", { error: error.message });
     }
   },
 
+  // Render the page to add a new user address
   userAddAddress: async (req, res) => {
     try {
       const userdetail = await collection.findOne({
         email: req.session.userid,
       });
-      res
-        .status(200)
-        .render("userAddAddress", {
-          session: req.session.userid,
-          title: "Hi, " + userdetail.name,
-        });
+      res.status(200).render("userAddAddress", {
+        session: req.session.userid,
+        title: "Hi, " + userdetail.name,
+      });
     } catch (error) {
       res.status(404).render("error", { error: error.message });
     }
   },
+
+  // Render the page to edit a user address
   edituserAddress: async (req, res) => {
     try {
       const user = req.query.id;
       const addressdetail = await useraddress.findOne({ _id: user });
 
-      res
-        .status(200)
-        .render("userEditAddress", {
-          session: req.session.userid,
-          address: addressdetail,
-        });
+      res.status(200).render("userEditAddress", {
+        session: req.session.userid,
+        address: addressdetail,
+      });
     } catch (error) {
       res.status(404).render("error", { error: error.message });
     }
   },
 
+  // Update user address data
   UseraddressEdit: async (req, res) => {
     try {
       dataobj = {
@@ -206,6 +196,7 @@ const user = {
     }
   },
 
+  // Add a new user address to the database
   addaddress: async (req, res) => {
     try {
       const userdetails = await collection.findOne({
@@ -228,6 +219,7 @@ const user = {
     }
   },
 
+  // Delete a user address from the database
   deleteAddress: async (req, res) => {
     try {
       const addressid = req.query.id;
@@ -238,6 +230,7 @@ const user = {
     }
   },
 
+  // Renders the checkout page with user details, address details, products in the cart, available coupons, and wallet balance.
   checkout: async (req, res) => {
     try {
       const userdetails = await collection.findOne({
@@ -249,21 +242,20 @@ const user = {
         .populate("products.productid");
       const coupon = await couponModel.find({});
       const wallet = await walletModel.findOne({ userid: userdetails._id });
-      res
-        .status(200)
-        .render("checkout", {
-          addresses: addressdetails,
-          products: productdetails,
-          session: req.session.userid,
-          title: "Hi, " + userdetails.name,
-          coupons: coupon,
-          wallet: wallet,
-        });
+      res.status(200).render("checkout", {
+        addresses: addressdetails,
+        products: productdetails,
+        session: req.session.userid,
+        title: "Hi, " + userdetails.name,
+        coupons: coupon,
+        wallet: wallet,
+      });
     } catch (error) {
       res.status(404).render("error", { error: error.message });
     }
   },
 
+  //Renders the page to add a new address during checkout.
   addaddresscheckout: async (req, res) => {
     try {
       res.status(200).render("addaddress", { session: req.session.userid });
@@ -272,6 +264,7 @@ const user = {
     }
   },
 
+  //Saves the new address provided by the user during checkout.
   checkoutaddaddress: async (req, res) => {
     try {
       const userdetails = await collection.findOne({
@@ -294,6 +287,8 @@ const user = {
     }
   },
 
+  //Processes the user's order by checking product availability, creating a new order,updating product quantities, and
+  //updating the user's wallet balance if the payment method is "Wallet."
   placeOrder: async (req, res) => {
     try {
       let flag = 0,
@@ -306,8 +301,6 @@ const user = {
       const couponusedcode = req.body.couponCode;
       const couponamount = req.body.couponAmount;
       let paymentStatus;
-      console.log("**************************************************");
-      console.log(paymentMethod);
       if (paymentMethod === "Razorpay" || paymentMethod === "Wallet") {
         paymentStatus = "Paid";
       } else {
@@ -384,6 +377,7 @@ const user = {
     }
   },
 
+  //Renders the order completion page after a successful order.
   ordercomplete: async (req, res) => {
     try {
       const user = req.session.userid;
@@ -394,18 +388,17 @@ const user = {
         .findOne({ userID: user })
         .populate("products.productid");
       await cart.findOneAndDelete({ userID: user });
-      res
-        .status(200)
-        .render("orderComplete", {
-          session: req.session.userid,
-          order: cartdetails,
-          title: "Hi, " + userdetails.name,
-        });
+      res.status(200).render("orderComplete", {
+        session: req.session.userid,
+        order: cartdetails,
+        title: "Hi, " + userdetails.name,
+      });
     } catch (error) {
       res.status(404).render("error", { error: error.message });
     }
   },
 
+  //Renders the order tracking page.
   trackorder: async (req, res) => {
     try {
       res.status(200).render("trackorder", { session: req.session.userid });
@@ -414,6 +407,7 @@ const user = {
     }
   },
 
+  //Renders the detailed view of a specific user order.
   userorderdetail: async (req, res) => {
     try {
       const userfind = await collection.findOne({ email: req.session.userid });
@@ -424,19 +418,17 @@ const user = {
         .populate("address")
         .populate("userid")
         .exec();
-      res
-        .status(200)
-        .render("userorderDetails", {
-          session: req.session.userid,
-          orderDetail: orderdetails,
-          title: "Hi, " + userfind.name,
-        });
+      res.status(200).render("userorderDetails", {
+        session: req.session.userid,
+        orderDetail: orderdetails,
+        title: "Hi, " + userfind.name,
+      });
     } catch (error) {
       res.status(404).render("error", { error: error.message });
     }
   },
-  //***********************************signup controller********************************************
 
+  //Renders the user registration page.
   signup: (req, res) => {
     try {
       const notice = req.flash("notice");
@@ -448,6 +440,7 @@ const user = {
     }
   },
 
+  // Checks if a user with the provided email already exists. If not, it sends an OTP to the user's email for verification.
   checkuser: async (req, res) => {
     try {
       let checkingData = await collection.findOne({
@@ -505,6 +498,7 @@ const user = {
     }
   },
 
+  //Handles user registration with OTP verification. Creates a new user if the OTP matches.
   signupOTP: async (req, res) => {
     try {
       const useremail = req.body.signupEmail;
@@ -547,8 +541,7 @@ const user = {
     }
   },
 
-  //***********************************login with OTP controller********************************************
-
+  //Renders the login page with OTP.
   loginWithOtp: (req, res) => {
     try {
       const notice = req.flash("notice");
@@ -558,6 +551,7 @@ const user = {
     }
   },
 
+  //Renders the OTP verification page during login.
   OTPpage: (req, res) => {
     try {
       res.status(200).render("OTPpage");
@@ -565,6 +559,8 @@ const user = {
       res.status(404).render("error", { error: error.message });
     }
   },
+
+  //Sends an OTP to the user's email for login.
   otpSend: async (req, res) => {
     try {
       const userdata = await collection.findOne({ email: req.body.email });
@@ -613,6 +609,7 @@ const user = {
     }
   },
 
+  //Verifies the OTP provided by the user during login and redirects to the homepage if successful.
   otpVerify: async (req, res) => {
     try {
       const useremail = req.body.email;
@@ -625,23 +622,19 @@ const user = {
           req.session.userid = req.body.email;
           const data = await collection.findOne({ email: req.session.userid });
           await otp.deleteMany({ email: req.session.userid });
-          res
-            .status(200)
-            .render("homepage", {
-              title: "Hi, " + data.name,
-              session: req.session.userid,
-            });
+          res.status(200).render("homepage", {
+            title: "Hi, " + data.name,
+            session: req.session.userid,
+          });
         } else {
           console.log("otp wrong");
           console.log(useremail);
           const finduser = await otp.findOne({ email: useremail });
 
-          res
-            .status(200)
-            .render("OTPpage", {
-              data: finduser,
-              notice: " Wrong OTP , Re-enter OTP",
-            });
+          res.status(200).render("OTPpage", {
+            data: finduser,
+            notice: " Wrong OTP , Re-enter OTP",
+          });
         }
       } else {
         console.log("expire");
@@ -653,6 +646,7 @@ const user = {
     }
   },
 
+  //Renders the login page with OTP and displays a notice if there is any.
   otpload: (req, res) => {
     try {
       const title = req.flash("notice");
@@ -662,6 +656,7 @@ const user = {
     }
   },
 
+  // Handles the timeout case when the OTP expires.
   otptimeout: async (req, res) => {
     try {
       const otpfind = await otp.findOne({ email: req.body.email });
@@ -676,6 +671,7 @@ const user = {
     }
   },
 
+  //Resends the OTP to the user's email.
   otpresend: async (req, res) => {
     try {
       const emailID = req.query.id;
@@ -780,32 +776,30 @@ const user = {
     }
   },
 
-  //***********************************Shirt page controller********************************************
-
+  // Loads the product page, displaying shirts and categories for the logged-in user.
   shirtpageload: async (req, res) => {
     try {
       const notice = req.flash("notice");
       const usersession = req.session.userid;
       const data = await collection.findOne({ email: usersession });
-      const shirts = await product.find({});
+      const shirts = await product.find({isDelete: false });
       const cate = await category.find({});
-      res
-        .status(200)
-        .render("products", {
-          products: shirts,
-          session: usersession,
-          title: "Hi, " + data.name,
-          session: usersession,
-          notice: notice[0] || "",
-          category: null,
-          categories: cate,
-          activeValue: null,
-        });
+      res.status(200).render("products", {
+        products: shirts,
+        session: usersession,
+        title: "Hi, " + data.name,
+        session: usersession,
+        notice: notice[0] || "",
+        category: null,
+        categories: cate,
+        activeValue: null,
+      });
     } catch (error) {
       res.status(404).render("error", { error: error.message });
     }
   },
 
+  //Displays the details of a specific shirt product.
   shirtview: async (req, res) => {
     try {
       const productid = req.query.id;
@@ -821,6 +815,7 @@ const user = {
     }
   },
 
+  //Performs a search for products based on the provided product name.
   productsearch: async (req, res) => {
     try {
       const proname = req.body.pname;
@@ -841,36 +836,30 @@ const user = {
           title: "Hi, " + data.name,
           session: usersession,
           category: null,
-          categories:cate
+          categories: cate,
         });
       } else {
         const cat = product_data[0].category;
         const categories = product_data.map((product) => product.category);
-        //  const productfindcat= await product.find({category:cat})
         const productfindcat = await product.find({
           category: cat,
           _id: { $nin: product_data.map((item) => item._id) },
         });
-        // const findcategory= await category.find({categoryName:categories})
-        // const similarproduct= await product.find({category:findcategory.categoryName})
-        // console.log("similar " + similarproduct);
         res.render("products", {
           products: product_data,
           session: usersession,
           title: "Hi, " + data.name,
           session: usersession,
           category: productfindcat,
-          categories:cate
+          categories: cate,
         });
       }
-
-      // const categoryall= await product.find({category:product_data.category})
     } catch (error) {
       res.status(404).render("error", { error: error.message });
     }
   },
-  //***********************************working controller********************************************
 
+  //Sends an OTP to the user's email during the signup process.
   SignupotpSend: async (req, res) => {
     try {
       const finduser = await collection.findOne({
@@ -918,6 +907,7 @@ const user = {
     }
   },
 
+  // Verifies the OTP entered by the user during the signup process.
   SignUpotpVerify: async (req, res) => {
     try {
       const SignUpemail = req.body.SignUpemail;
@@ -932,12 +922,10 @@ const user = {
         } else {
           console.log("otp wrong");
           const finduser = await otp.findOne({ email: SignUpemail });
-          res
-            .status(200)
-            .render("SignupOtpPage", {
-              data: finduser,
-              notice: " Wrong OTP , Re-enter OTP",
-            });
+          res.status(200).render("SignupOtpPage", {
+            data: finduser,
+            notice: " Wrong OTP , Re-enter OTP",
+          });
         }
       } else {
         console.log("expire");
@@ -949,6 +937,7 @@ const user = {
     }
   },
 
+  //Creates a new user account and saves it to the database.
   newuser: async (req, res) => {
     try {
       const data = new collection({
@@ -965,6 +954,7 @@ const user = {
     }
   },
 
+  //Resends the OTP during the signup process.
   SignUpotpresend: async (req, res) => {
     try {
       const emailID = req.query.id;
@@ -1061,8 +1051,7 @@ const user = {
     }
   },
 
-  //***********************************About controller********************************************
-
+  //Renders the "About" page.
   about: async (req, res) => {
     try {
       res.status(200).render("about");
@@ -1071,8 +1060,7 @@ const user = {
     }
   },
 
-  //***********************************contact us controller********************************************
-
+  //Renders the "Contact Us" page.
   contactus: async (req, res) => {
     try {
       res.status(200).render("contact");
@@ -1081,17 +1069,17 @@ const user = {
     }
   },
 
-  //***********************************Logout controller********************************************
-
+  //Logs out the user by destroying the session.
   logout: (req, res) => {
     try {
       req.session.destroy();
-      res.status(200).render("homepage", { title: "" });
+      res.status(200).redirect("/");
     } catch (error) {
       res.status(404).render("error", { error: error.message });
     }
   },
 
+  //Creates an order for a product, checking stock availability.
   createOrder: async (req, res) => {
     try {
       console.log("start stock");
@@ -1134,40 +1122,39 @@ const user = {
     }
   },
 
+  //Renders the user's account details page.
   useraccount: async (req, res) => {
     try {
       const userdetails = await collection.findOne({
         email: req.session.userid,
       });
-      res
-        .status(200)
-        .render("userAccountDetails", {
-          data: userdetails,
-          title: "Hi, " + userdetails.name,
-          session: req.session.userid,
-        });
+      res.status(200).render("userAccountDetails", {
+        data: userdetails,
+        title: "Hi, " + userdetails.name,
+        session: req.session.userid,
+      });
     } catch (error) {
       res.status(404).render("error", { error: error.message });
     }
   },
 
+  //Renders the user account edit page.
   userAccountEdit: async (req, res) => {
     try {
       const userdetails = await collection.findOne({
         email: req.session.userid,
       });
-      res
-        .status(200)
-        .render("userAccountEdit", {
-          data: userdetails,
-          title: "Hi, " + userdetails.name,
-          session: req.session.userid,
-        });
+      res.status(200).render("userAccountEdit", {
+        data: userdetails,
+        title: "Hi, " + userdetails.name,
+        session: req.session.userid,
+      });
     } catch (error) {
       res.status(404).render("error", { error: error.message });
     }
   },
 
+  //Updates the user's account information after editing.
   userEditSucess: async (req, res) => {
     try {
       const user = await collection.findOne({ email: req.session.userid });
@@ -1188,52 +1175,57 @@ const user = {
     }
   },
 
+  //Handles uploading a profile photo for the user.
   uploadprofilephoto: async (req, res) => {
     try {
       let userId = req.session.userid;
       const userdetails = await collection.findOne({ email: userId });
 
-      upload.single("profilePhoto")(req, res, async (err) => {
-        if (err) {
-          console.log(err);
-          req.session.message = {
-            type: "error",
-            message: "Failed to upload profile photo",
-          };
-          res.status(200).redirect("/profile-view");
-          // return res.status(500).json({ error: 'Failed to upload profile photo' });
+      multerhelper.profileImageUpload.single("profilePhoto")(
+        req,
+        res,
+        async (err) => {
+          if (err) {
+            console.log(err);
+            req.session.message = {
+              type: "error",
+              message: "Failed to upload profile photo",
+            };
+            res.status(200).redirect("/profile-view");
+          }
+
+          const filename = req.file.filename;
+
+          await collection
+            .findByIdAndUpdate(userdetails._id, {
+              $set: { userprofile: filename },
+            })
+            .then(() => {
+              res.json({ status: true });
+            });
         }
+      );
+    } catch (error) {
+      return res.status(500).json({ error: "Internal server error" });
+    }
+  },
 
-        const filename = req.file.filename;
-
-        await collection
-          .findByIdAndUpdate(userdetails._id, {
-            $set: { userprofile: filename },
-          })
-          .then(() => {
-            res.json({ status: true });
-          });
+  //Renders the "Forget Password" page.
+  forgetpassword: async (req, res) => {
+    try {
+      const userfind = await collection.findOne({ email: req.session.userid });
+      const notice = req.flash("notice");
+      res.status(200).render("forgetpassword", {
+        session: req.session.userid,
+        title: "Hi, " + userfind.name,
+        notice: notice[0] || "",
       });
     } catch (error) {
       return res.status(500).json({ error: "Internal server error" });
     }
   },
-  forgetpassword: async (req, res) => {
-    try {
-      const userfind = await collection.findOne({ email: req.session.userid });
-      const notice = req.flash("notice");
-      res
-        .status(200)
-        .render("forgetpassword", {
-          session: req.session.userid,
-          title: "Hi, " + userfind.name,
-          notice: notice[0] || "",
-        });
-    } catch (error) {
-      return res.status(500).json({ error: "Internal server error" });
-    }
-  },
 
+  // Renders the OTP page during the password reset process.
   forgetOTPpage: async (req, res) => {
     try {
       const userdata = await collection.findOne({ email: req.body.email });
@@ -1268,13 +1260,11 @@ const user = {
             Otp.otp = await bcrypt.hash(Otp.otp, salt);
             const result = await Otp.save();
 
-            res
-              .status(200)
-              .render("ForgetOTPpage", {
-                data: result,
-                session: req.session.userid,
-                title: "Hi, " + userdata.name,
-              });
+            res.status(200).render("ForgetOTPpage", {
+              data: result,
+              session: req.session.userid,
+              title: "Hi, " + userdata.name,
+            });
           } else {
             console.log("user not found");
             req.flash("notice", "user not found");
@@ -1293,6 +1283,7 @@ const user = {
     }
   },
 
+  // This function handles the verification of the OTP sent during the forget password process.
   ForgetotpVerify: async (req, res) => {
     try {
       const useremail = req.body.email;
@@ -1316,12 +1307,10 @@ const user = {
           console.log(useremail);
           const finduser = await otp.findOne({ email: useremail });
 
-          res
-            .status(200)
-            .render("ForgetOTPpage", {
-              data: finduser,
-              notice: " Wrong OTP , Re-enter OTP",
-            });
+          res.status(200).render("ForgetOTPpage", {
+            data: finduser,
+            notice: " Wrong OTP , Re-enter OTP",
+          });
         }
       } else {
         console.log("expire");
@@ -1333,6 +1322,7 @@ const user = {
     }
   },
 
+  //This function is responsible for changing the user's password after verifying the OTP.
   passwordChanged: async (req, res) => {
     try {
       console.log(req.session.userid);
@@ -1358,6 +1348,7 @@ const user = {
     }
   },
 
+  //This function checks the validity of a coupon code and its applicability to the user's order.
   checkvalid_Coupon: async (req, res) => {
     try {
       let couponCode = req.body.code;
@@ -1386,6 +1377,7 @@ const user = {
     }
   },
 
+  //This function retrieves and displays the user's wallet details.
   walletload: async (req, res) => {
     try {
       const user = await collection.findOne({ email: req.session.userid });
@@ -1396,6 +1388,7 @@ const user = {
     }
   },
 
+  //This function handles the cancellation of an order and initiates a refund if applicable.
   cancelOrder: async (req, res) => {
     const userData = req.session.userid;
     const userfind = await collection.findOne({ email: userData });
@@ -1462,6 +1455,7 @@ const user = {
     }
   },
 
+  //This function handles the request for returning an order.
   returnRequest: async (req, res) => {
     const { id } = req.body;
     try {
@@ -1483,6 +1477,7 @@ const user = {
 
 module.exports = user;
 
+//check product stock
 let checkStock = async (user) => {
   let flag = 0;
   const Cart = await cart
