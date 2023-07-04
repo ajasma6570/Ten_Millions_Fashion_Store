@@ -26,7 +26,7 @@ const user = {
   homepage: async (req, res) => {
     try {
       const data = await collection.findOne({ email: req.session.userid });
-      const pro = await product.find({isDelete: false }).limit(4);
+      const pro = await product.find({ isDelete: false }).limit(4);
       if (req.session.userid) {
         res.status(200).render("homepage", {
           title: "Hi, " + data.name,
@@ -45,7 +45,7 @@ const user = {
   home: async (req, res) => {
     const { userid } = req.session;
     let userdata = await collection.findOne({ email: userid });
-    const pro = await product.find({isDelete: false }).limit(4);
+    const pro = await product.find({ isDelete: false }).limit(4);
     res.status(200).render("homepage", {
       title: "Hi, " + userdata.name,
       session: userid,
@@ -291,8 +291,8 @@ const user = {
   //updating the user's wallet balance if the payment method is "Wallet."
   placeOrder: async (req, res) => {
     try {
-      let flag = 0,
-        stockOut = [];
+      // let flag = 0,
+      //   stockOut = [];
       const address = req.body.address;
       const total = req.body.total;
       const paymentMethod = req.body.paymentmethod;
@@ -306,18 +306,19 @@ const user = {
       } else {
         paymentStatus = "Unpaid";
       }
+      let flag = await checkStock(user);
 
       const cartdetail = await cart
         .findOne({ userID: user })
         .populate("products.productid");
 
-      cartdetail.products.forEach(async (productdetail) => {
-        const pro = await product.findOne({ _id: productdetail.productid });
-        if (productdetail.Cartquantity > pro.quantity) {
-          flag = 1;
-          stockOut.push({ name: pro.productname, available: pro.quantity });
-        }
-      });
+      // cartdetail.products.forEach(async (productdetail) => {
+      //   const pro = await product.findOne({ _id: productdetail.productid });
+      //   if (productdetail.Cartquantity > pro.quantity) {
+      //     flag = 1;
+      //     stockOut.push({ name: pro.productname, available: pro.quantity });
+      //   }
+      // });
 
       const couponupdate = await couponModel.findOneAndUpdate(
         { couponCode: couponusedcode },
@@ -621,10 +622,12 @@ const user = {
         if (validuser) {
           req.session.userid = req.body.email;
           const data = await collection.findOne({ email: req.session.userid });
+          const pro = await product.find({ isDelete: false }).limit(4);
           await otp.deleteMany({ email: req.session.userid });
           res.status(200).render("homepage", {
             title: "Hi, " + data.name,
             session: req.session.userid,
+            products: pro,
           });
         } else {
           console.log("otp wrong");
@@ -711,6 +714,7 @@ const user = {
             transporter.sendMail(mailOptions, function (error, info) {
               if (error) {
                 // Handle error sending email
+                res.status(404).render("error", { error: error.message });
               } else {
                 // Email sent successfully
                 console.log("OTP email sent");
@@ -782,7 +786,7 @@ const user = {
       const notice = req.flash("notice");
       const usersession = req.session.userid;
       const data = await collection.findOne({ email: usersession });
-      const shirts = await product.find({isDelete: false });
+      const shirts = await product.find({ isDelete: false });
       const cate = await category.find({});
       res.status(200).render("products", {
         products: shirts,
@@ -1082,7 +1086,6 @@ const user = {
   //Creates an order for a product, checking stock availability.
   createOrder: async (req, res) => {
     try {
-      console.log("start stock");
       const user = req.session.userid;
       let amount = parseInt(req.body.amount) * 100;
       let flag = await checkStock(user);
@@ -1211,11 +1214,11 @@ const user = {
   },
 
   //Renders the "Forget Password" page.
-  forgetpassword: async (req, res) => {
+  userChangePassword: async (req, res) => {
     try {
       const userfind = await collection.findOne({ email: req.session.userid });
       const notice = req.flash("notice");
-      res.status(200).render("forgetpassword", {
+      res.status(200).render("userChangePassword", {
         session: req.session.userid,
         title: "Hi, " + userfind.name,
         notice: notice[0] || "",
@@ -1226,7 +1229,7 @@ const user = {
   },
 
   // Renders the OTP page during the password reset process.
-  forgetOTPpage: async (req, res) => {
+  userPasswordChangeOTPpage: async (req, res) => {
     try {
       const userdata = await collection.findOne({ email: req.body.email });
       if (req.session.userid === req.body.email) {
@@ -1260,7 +1263,7 @@ const user = {
             Otp.otp = await bcrypt.hash(Otp.otp, salt);
             const result = await Otp.save();
 
-            res.status(200).render("ForgetOTPpage", {
+            res.status(200).render("userPasswordChangeOTPpage", {
               data: result,
               session: req.session.userid,
               title: "Hi, " + userdata.name,
@@ -1268,15 +1271,15 @@ const user = {
           } else {
             console.log("user not found");
             req.flash("notice", "user not found");
-            res.status(200).redirect("/forgetpassword");
+            res.status(200).redirect("/userChangePassword");
           }
         } else {
           req.flash("notice", "user not found");
-          res.status(200).redirect("/forgetpassword");
+          res.status(200).redirect("/userChangePassword");
         }
       } else {
         req.flash("notice", "user Email-Id not Matching");
-        res.status(200).redirect("/forgetpassword");
+        res.status(200).redirect("/userChangePassword");
       }
     } catch (error) {
       res.status(404).render("error", { error: error.message });
@@ -1284,7 +1287,7 @@ const user = {
   },
 
   // This function handles the verification of the OTP sent during the forget password process.
-  ForgetotpVerify: async (req, res) => {
+  UserChangePasswordVerify: async (req, res) => {
     try {
       const useremail = req.body.email;
       const userotp = req.body.otp;
@@ -1298,7 +1301,7 @@ const user = {
           req.session.userid = req.body.email;
           const data = await collection.findOne({ email: req.session.userid });
           await otp.deleteMany({ email: req.session.userid });
-          res.render("newpassword", {
+          res.render("UserNewPassword", {
             session: req.session.userid,
             title: "Hi, " + userdata.name,
           });
@@ -1307,7 +1310,7 @@ const user = {
           console.log(useremail);
           const finduser = await otp.findOne({ email: useremail });
 
-          res.status(200).render("ForgetOTPpage", {
+          res.status(200).render("userPasswordChangeOTPpage", {
             data: finduser,
             notice: " Wrong OTP , Re-enter OTP",
           });
@@ -1315,7 +1318,7 @@ const user = {
       } else {
         console.log("expire");
         req.flash("notice", "You used an Expried OTP");
-        res.status(200).redirect("/forgetpassword");
+        res.status(200).redirect("/userChangePassword");
       }
     } catch (error) {
       res.status(404).render("error", { error: error.message });
@@ -1323,7 +1326,7 @@ const user = {
   },
 
   //This function is responsible for changing the user's password after verifying the OTP.
-  passwordChanged: async (req, res) => {
+  UserPasswordChanged: async (req, res) => {
     try {
       console.log(req.session.userid);
       console.log(req.body.password);
@@ -1333,7 +1336,7 @@ const user = {
       });
       if (userdetails.password == newpass) {
         req.flash("notice", "Enter password is old password");
-        res.redirect("/forgetpassword");
+        res.redirect("/userChangePassword");
       } else {
         const change = await collection.findByIdAndUpdate(userdetails._id, {
           $set: { password: newpass },
@@ -1471,6 +1474,242 @@ const user = {
       }
     } catch (error) {
       res.render("error", { error: error.message });
+    }
+  },
+
+  //Renders the "Forget Password" page.
+  forgetPassword: async (req, res) => {
+    try {
+      const notice = req.flash("notice");
+      res.status(200).render("forgetChangePassword", {
+        notice: notice[0] || "",
+      });
+    } catch (error) {
+      return res.status(500).json({ error: "Internal server error" });
+    }
+  },
+
+  // Renders the OTP page during the password reset process.
+  forgetPasswordChangeOTPpage: async (req, res) => {
+    try {
+      const userdata = await collection.findOne({ email: req.body.email });
+
+      if (userdata) {
+        if (userdata.block === 0) {
+          const OTP = otpGenerator.generate(4, {
+            digits: true,
+            alphabets: false,
+            upperCaseAlphabets: false,
+            lowerCaseAlphabets: false,
+            specialChars: false,
+          });
+          console.log(OTP);
+          const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+              user: "ajasmaprince@gmail.com",
+              pass: "ydkvwkujlbgrcdjo",
+            },
+          });
+          var mailOptions = {
+            from: "ajasmaprince@gmail.com",
+            to: userdata.email,
+            subject: "OTP VERIFICATION",
+            text: "PLEASE ENTER THE OTP FOR LOGIN " + OTP,
+          };
+          transporter.sendMail(mailOptions, function (error, info) {});
+          console.log(OTP);
+          const Otp = new otp({ email: req.body.email, otp: OTP });
+          const salt = await bcrypt.genSalt(10);
+          Otp.otp = await bcrypt.hash(Otp.otp, salt);
+          const result = await Otp.save();
+
+          res.status(200).render("forgetPasswordChangeOTPpage", {
+            data: result,
+          });
+        } else {
+          console.log("user not found");
+          req.flash("notice", "user not found");
+          res.status(200).redirect("/forgetPassword");
+        }
+      } else {
+        req.flash("notice", "user not found");
+        res.status(200).redirect("/forgetPassword");
+      }
+    } catch (error) {
+      res.status(404).render("error", { error: error.message });
+    }
+  },
+
+  // This function handles the verification of the OTP sent during the forget password process.
+  forgetChangePasswordVerify: async (req, res) => {
+    try {
+      const useremail = req.body.email;
+      const userotp = req.body.otp;
+      const userdata = await collection.findOne({ email: req.body.email });
+      const otpHolder = await otp.findOne({ email: useremail });
+
+      if (otpHolder) {
+        const validuser = await bcrypt.compare(userotp, otpHolder.otp);
+        console.log(validuser);
+        if (validuser) {
+          req.session.userid = req.body.email;
+          const data = await collection.findOne({ email: req.session.userid });
+          await otp.deleteMany({ email: req.session.userid });
+          res.render("forgetNewPassword", { email: useremail });
+        } else {
+          console.log("otp wrong");
+          console.log(useremail);
+          const finduser = await otp.findOne({ email: useremail });
+
+          res.status(200).render("forgetPasswordChangeOTPpage", {
+            data: finduser,
+            notice: " Wrong OTP , Re-enter OTP",
+          });
+        }
+      } else {
+        console.log("expire");
+        req.flash("notice", "You used an Expried OTP");
+        res.status(200).redirect("/forgetPassword");
+      }
+    } catch (error) {
+      res.status(404).render("error", { error: error.message });
+    }
+  },
+
+  //This function is responsible for changing the user's password after verifying the OTP.
+  forgetPasswordChanged: async (req, res) => {
+    const { email } = req.body;
+    try {
+      const newpass = req.body.password;
+      const userdetails = await collection.findOne({
+        email: email,
+      });
+      if (userdetails.password == newpass) {
+        req.flash("notice", "Enter password is old password");
+        res.redirect("/forgetPassword");
+      } else {
+        const change = await collection.findByIdAndUpdate(userdetails._id, {
+          $set: { password: newpass },
+        });
+        req.session.destroy();
+        res.render("login", {
+          notice: "password change successfully , Login Again",
+          noticeType: "success",
+        });
+      }
+    } catch (error) {
+      res.status(404).render("error", { error: error.message });
+    }
+  },
+
+  //Resends the OTP to the user's email.
+  forgetOTPResend: async (req, res) => {
+    try {
+      const emailID = req.query.id;
+      const userdata = await collection.findOne({ email: emailID });
+      if (userdata) {
+        if (userdata.block === 0) {
+          const existingOTP = await otp.findOne({ email: emailID });
+          // If there is an existing OTP, update it and resend
+          if (existingOTP) {
+            const OTP = otpGenerator.generate(4, {
+              digits: true,
+              alphabets: false,
+              upperCaseAlphabets: false,
+              lowerCaseAlphabets: false,
+              specialChars: false,
+            });
+
+            const salt = await bcrypt.genSalt(10);
+            existingOTP.otp = await bcrypt.hash(OTP, salt);
+            await existingOTP.save();
+
+            const transporter = nodemailer.createTransport({
+              service: "gmail",
+              auth: {
+                user: "ajasmaprince@gmail.com",
+                pass: "ydkvwkujlbgrcdjo",
+              },
+            });
+
+            var mailOptions = {
+              from: "ajasmaprince@gmail.com",
+              to: userdata.email,
+              subject: "OTP VERIFICATION",
+              text: "PLEASE ENTER THE OTP FOR LOGIN: " + OTP,
+            };
+
+            transporter.sendMail(mailOptions, function (error, info) {
+              if (error) {
+                // Handle error sending email
+                res.status(404).render("error", { error: error.message });
+              } else {
+                // Email sent successfully
+                console.log("OTP email sent");
+              }
+            });
+
+            console.log(OTP);
+
+            res
+              .status(200)
+              .render("forgetPasswordChangeOTPpage", { data: existingOTP });
+          } else {
+            // Generate a new OTP and save it
+            const OTP = otpGenerator.generate(4, {
+              digits: true,
+              alphabets: false,
+              upperCaseAlphabets: false,
+              lowerCaseAlphabets: false,
+              specialChars: false,
+            });
+
+            const transporter = nodemailer.createTransport({
+              service: "gmail",
+              auth: {
+                user: "ajasmaprince@gmail.com",
+                pass: "ydkvwkujlbgrcdjo",
+              },
+            });
+
+            var mailOptions = {
+              from: "ajasmaprince@gmail.com",
+              to: userdata.email,
+              subject: "OTP VERIFICATION",
+              text: "PLEASE ENTER THE OTP FOR LOGIN: " + OTP,
+            };
+
+            transporter.sendMail(mailOptions, function (error, info) {
+              if (error) {
+                res.status(500).send({ success: false, msg: error.message });
+              } else {
+                // Email sent successfully
+                console.log("OTP email sent");
+              }
+            });
+
+            console.log(OTP);
+
+            const newOtp = new otp({ email: req.body.email, otp: OTP });
+            const salt = await bcrypt.genSalt(10);
+            newOtp.otp = await bcrypt.hash(newOtp.otp, salt);
+            const result = await newOtp.save();
+
+            res
+              .status(200)
+              .render("forgetPasswordChangeOTPpage", { data: result });
+          }
+        } else {
+          req.flash("notice", "user Blocked");
+          res.status(200).redirect("/forgetPassword");
+        }
+      } else {
+        req.flash("notice", "user not found");
+        res.status(200).redirect("/forgetPassword");
+      }
+    } catch (error) {
+      res.status(404).render("error", { error: error.message });
     }
   },
 };

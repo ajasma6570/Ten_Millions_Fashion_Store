@@ -1,18 +1,9 @@
-require('dotenv').config();
-const mongoose = require('mongoose')
+require('./config/mongDBConnect')
 const express=require('express')
 const userRouter=require('./routers/userRouter')
 const adminRouter=require('./routers/adminRouter')
 
-const PORT=process.env.PORT || 3700
-
-// Connect to MongoDB
-mongoose.connect(process.env.dbconnect)
-.then(()=>{
-    console.log("mongodb connected...");
-}).catch(()=>{
-    console.log("Failed to connect");
-})
+const PORT=process.env.PORT
 
 const app=express()
 

@@ -269,7 +269,7 @@
   <% if (locals.notice) { %>
 	  <script>
 		Swal.fire({
-		  icon: 'error',
+		  icon: '<%= locals.noticeType === "success" ? "success" : "error" %>',
 		  title: '<%=notice%>',
 		  showConfirmButton: false,
 		  timer: 2000

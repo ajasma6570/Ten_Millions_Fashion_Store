@@ -11,7 +11,6 @@ const userAuth=require('../authentication/userAuthentication')
 const cart_controller=require("../controllers/cartController")
 const { notFoundHandler, errorHandler } = require('../helper/errorMiddleware');
 
-
 // Set view engine and views directory
 user_router.set('view engine','ejs')
 user_router.set('views','./views/userViews')
@@ -53,15 +52,9 @@ user_router.get('/ordercomplete',userAuth.isLogin,userAuth.isBlocked,user_contro
 user_router.get('/loginWithOtp',userAuth.isLogout,user_controller.loginWithOtp)
 user_router.post('/OTPpage',userAuth.isLogout,user_controller.otpSend)
 user_router.post('/otp',userAuth.isLogout,user_controller.otpVerify)
+user_router.get('/otpresend',userAuth.isLogout,user_controller.otpresend)
 user_router.get('/otpload',userAuth.isLogout,user_controller.otpload)
 user_router.post('/otptimeout',userAuth.isLogout,user_controller.otptimeout)
-user_router.get('/otpresend',userAuth.isLogout,user_controller.otpresend)
-
-//user password change
-user_router.get('/forgetpassword',userAuth.isLogin,userAuth.isBlocked,user_controller.forgetpassword)
-user_router.post('/forgetOTPpage',userAuth.isLogin,userAuth.isBlocked,user_controller.forgetOTPpage)
-user_router.post('/ForgetotpVerify',userAuth.isLogin,userAuth.isBlocked,user_controller.ForgetotpVerify)
-user_router.post('/passwordChanged',userAuth.isLogin,userAuth.isBlocked,user_controller.passwordChanged)
 
 //user signup related routers
 user_router.get('/signup',userAuth.isLogout,user_controller.signup)
@@ -104,6 +97,12 @@ user_router.post('/userAccountEdit',userAuth.isLogin,userAuth.isBlocked,user_con
 user_router.post('/razorpay',userAuth.isLogin,userAuth.isBlocked,user_controller.createOrder)
 user_router.post('/userEditSucess',userAuth.isLogin,userAuth.isBlocked,user_controller.userEditSucess)
 
+//user password change
+user_router.get('/userChangePassword',userAuth.isLogin,userAuth.isBlocked,user_controller.userChangePassword)
+user_router.post('/userPasswordChangeOTPpage',userAuth.isLogin,userAuth.isBlocked,user_controller.userPasswordChangeOTPpage)
+user_router.post('/UserChangePasswordVerify',userAuth.isLogin,userAuth.isBlocked,user_controller.UserChangePasswordVerify)
+user_router.post('/UserPasswordChanged',userAuth.isLogin,userAuth.isBlocked,user_controller.UserPasswordChanged)
+
 //user coupon
 user_router.post('/checkvalidcoupon',userAuth.isLogin,userAuth.isBlocked,user_controller.checkvalid_Coupon)
 
@@ -111,6 +110,14 @@ user_router.post('/checkvalidcoupon',userAuth.isLogin,userAuth.isBlocked,user_co
 user_router.get('/wallet',userAuth.isLogin,userAuth.isBlocked,user_controller.walletload)
 user_router.post("/cancelorder",userAuth.isLogin,userAuth.isBlocked,user_controller.cancelOrder);
 user_router.post("/returnorder",userAuth.isLogin,userAuth.isBlocked,user_controller.returnRequest);
+
+//forgetPassword
+//user password change
+user_router.get('/forgetPassword',user_controller.forgetPassword)
+user_router.post('/forgetPasswordChangeOTPpage',user_controller.forgetPasswordChangeOTPpage)
+user_router.post('/forgetChangePasswordVerify',user_controller.forgetChangePasswordVerify)
+user_router.post('/forgetPasswordChanged',user_controller.forgetPasswordChanged)
+user_router.get('/forgetOTPResend',userAuth.isLogout,user_controller.forgetOTPResend)
 
 //user logout related routers
 user_router.get('/logout',userAuth.isLogin,userAuth.isBlocked,user_controller.logout)
