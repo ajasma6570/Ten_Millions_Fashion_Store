@@ -893,7 +893,7 @@ const user = {
         });
         var mailOptions = {
           from: "ajasmaprince@gmail.com",
-          to: SignUpEmail.email,
+          to: SignUpEmail,
           subject: "OTP VERIFICATION",
           text: "PLEASE ENTER THE OTP FOR LOGIN " + OTP,
         };
