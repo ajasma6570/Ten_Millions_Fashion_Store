@@ -33,6 +33,37 @@
     <link rel="stylesheet" href="assets/css/skins/skin-demo-5.css">
     <link rel="stylesheet" href="assets/css/demos/demo-5.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css"  />
+<style>
+    /* Add custom CSS for mobile screens */
+@media (max-width: 767px) {
+  .header-right {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .header-search {
+    margin-right: 10px;
+  }
+
+  .dropdown.cart-dropdown {
+    position: static;
+    margin-right: 10px;
+  }
+
+  .dropdown.cart-dropdown .dropdown-menu {
+    right: 0;
+    left: auto;
+  }
+
+  .header-right .dropdown-toggle {
+    font-size: 2rem; /* Adjust the font size as needed */
+    padding-right: 0px; /* Add some right padding to create space */
+  }
+}
+
+</style>
+
 </head>
 
 <body>
@@ -111,9 +142,9 @@
 
 	                    </div>
                         
-                        <a href="#" class="wishlist-link">
+                        <!-- <a href="#" class="wishlist-link">
                             <i class="icon-heart-o"></i>
-                        </a>
+                        </a > -->
 
                         <div class="dropdown cart-dropdown">
                             <a href="/cart" class="dropdown-toggle" role="button"  aria-haspopup="true" aria-expanded="false" data-display="static">
