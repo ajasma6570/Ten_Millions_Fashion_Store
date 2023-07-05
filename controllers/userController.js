@@ -546,7 +546,7 @@ const user = {
   loginWithOtp: (req, res) => {
     try {
       const notice = req.flash("notice");
-      res.status(200).render("loginwithOtp", { notice: notice[0] });
+      res.status(200).render("loginWithOtp", { notice: notice[0] });
     } catch (error) {
       res.status(404).render("error", { error: error.message });
     }
