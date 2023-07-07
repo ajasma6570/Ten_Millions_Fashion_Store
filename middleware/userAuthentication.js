@@ -32,7 +32,7 @@ const userAuth = {
       const user = await collection.findOne({ email: req.session.userid });
       if (user.block == 1) {
         req.session.destroy();
-        res.status(200).render("login", { notice: "User Account Blocked" })
+        res.redirect('/login');
       } else {
         next();
       }
