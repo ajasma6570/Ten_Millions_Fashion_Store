@@ -5,7 +5,7 @@ const session=require('express-session')
 const flash=require("connect-flash")
 const nocache=require('nocache')
 
-const adminAuth=require('../authentication/adminAuthentication')
+const adminAuth=require('../middleware/adminAuthentication')
 const adminController=require('../controllers/adminController')
 const saleController=require('../controllers/saleController')
 const couponController=require('../controllers/couponController')

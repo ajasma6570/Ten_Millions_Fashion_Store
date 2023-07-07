@@ -1058,7 +1058,13 @@ const user = {
   //Renders the "About" page.
   about: async (req, res) => {
     try {
-      res.status(200).render("about");
+      const {userid}=req.session
+      if(userid){
+        const user=await collection.findOne({email:userid})
+        res.status(200).render("about",{session:userid,title:"Hi "+user.name});
+      }else{
+        res.status(200).render("about");
+      }
     } catch (error) {
       res.status(404).render("error", { error: error.message });
     }
@@ -1067,7 +1073,13 @@ const user = {
   //Renders the "Contact Us" page.
   contactus: async (req, res) => {
     try {
-      res.status(200).render("contact");
+      const {userid}=req.session
+      if(userid){
+        const user=await collection.findOne({email:userid})
+        res.status(200).render("contact",{session:userid,title:"Hi "+user.name});
+      }else{
+        res.status(200).render("contact");
+      }
     } catch (error) {
       res.status(404).render("error", { error: error.message });
     }
@@ -1385,7 +1397,7 @@ const user = {
     try {
       const user = await collection.findOne({ email: req.session.userid });
       const walletdetails = await walletModel.findOne({ userid: user._id });
-      res.render("walletpage", { session: user, wallet: walletdetails });
+      res.render("walletpage", { session: user, wallet: walletdetails ,title:"Hi "+user.name});
     } catch (error) {
       res.status(404).render("error", { error: error.message });
     }

@@ -7,7 +7,7 @@ const {v4:uuidv4}=require('uuid')
 
 const adminRouter = require('../routers/adminRouter');
 const user_controller=require('../controllers/userController')
-const userAuth=require('../authentication/userAuthentication')
+const userAuth=require('../middleware/userAuthentication')
 const cart_controller=require("../controllers/cartController")
 const { notFoundHandler, errorHandler } = require('../helper/errorMiddleware');
 
@@ -78,10 +78,10 @@ user_router.post('/decrement',userAuth.isLogin,userAuth.isBlocked,cart_controlle
 user_router.post('/productsearch',userAuth.isLogin,userAuth.isBlocked,user_controller.productsearch)
 
 //about us
-user_router.get('/about',userAuth.isLogin,userAuth.isBlocked,user_controller.about)
+user_router.get('/about',user_controller.about)
 
 //contact us
-user_router.get('/contactus',userAuth.isLogin,userAuth.isBlocked,user_controller.contactus)
+user_router.get('/contactus',user_controller.contactus)
 
 //user dashboard
 user_router.get('/userorder',userAuth.isLogin,userAuth.isBlocked,user_controller.userorder)
