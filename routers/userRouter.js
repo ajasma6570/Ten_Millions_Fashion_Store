@@ -37,6 +37,7 @@ user_router.use(flash())
 user_router.use('/admin', adminRouter);
 user_router.get('/',user_controller.homepage)
 user_router.get('/login',userAuth.isLogout,user_controller.login)
+user_router.get('/userblocked',userAuth.isLogout,user_controller.login)
 user_router.post('/login',userAuth.isLogout,user_controller.userlogin)
 user_router.get('/home',userAuth.isLogin,userAuth.isBlocked,user_controller.home)
 user_router.get('/userprofile',userAuth.isLogin,userAuth.isBlocked,user_controller.userprofile)

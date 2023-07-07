@@ -62,6 +62,14 @@ const user = {
       res.status(404).render("error", { error: error.message });
     }
   },
+  userblock: (req, res) => {
+    try {
+      const notice = req.flash("notice");
+      res.status(200).render("login", { notice: notice[0] || "" });
+    } catch (error) {
+      res.status(404).render("error", { error: error.message });
+    }
+  },
 
   // Handle user login request
   userlogin: async (req, res) => {

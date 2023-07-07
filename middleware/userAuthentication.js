@@ -9,16 +9,21 @@ const userAuth = {
         next();
       }
     } catch (error) {
-      console.log(error.message);
+      res.status(404).render("error", { error: error.message });
     }
   },
 
   isLogin: async (req, res, next) => {
-    if (req.session.userid) {
-      next();
-    } else {
-      res.redirect("/login");
+    try{
+      if (req.session.userid) {
+        next();
+      } else {
+        res.redirect("/login");
+      }
+    }catch(error){
+      res.status(404).render("error", { error: error.message });
     }
+   
   },
 
   
@@ -27,12 +32,12 @@ const userAuth = {
       const user = await collection.findOne({ email: req.session.userid });
       if (user.block == 1) {
         req.session.destroy();
-        res.render("homepage", { notice: "User Account Blocked" });
+        res.status(200).render("login", { notice: "User Account Blocked" })
       } else {
         next();
       }
     } catch (error) {
-      res.status(500).send({ success: false, msg: error.message });
+      res.status(404).render("error", { error: error.message });
     }
   },
 };
