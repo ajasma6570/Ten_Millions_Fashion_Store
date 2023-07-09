@@ -123,7 +123,7 @@
 															<td class="action-col" style="position: relative;left: 1.5rem;" >
 					
 																		<% if(order.status == "Delivered"){ %>
-                                                                    <a href="#" id="returnorder" data-id="<%=order._id%>"><button class="btn btn-outline-warning return">RETURN</button></a>
+																			<a href="#" class="returnorder" data-id="<%=order._id%>"><button class="btn btn-outline-warning return">RETURN</button></a>
                                                                 <% } else if(order.status == "Completed") { %>
                                                                     <button class="btn btn-info return" disabled>ORDER COMPLETED</button>
                                                                 <% } else if (order.status == "Cancelled") { %>
@@ -135,7 +135,7 @@
                                                                 <% } else if (order.status == "Returned") { %>
                                                                     <button class="btn btn-info return" disabled>RETURNED</button>
                                                                 <% }  else { %>
-                                                                    <a href="#" id="cancelorder" data-id="<%=order._id%>"><button class="btn btn-outline-danger cancel">CANCEL</button></a>
+                                                                    <a href="#" class="cancelorder" data-id="<%=order._id%>"><button class="btn btn-outline-danger cancel">CANCEL</button></a>
                                                                 <% } %>
 														
 															</td>
@@ -184,7 +184,7 @@
 	<script>
 		
 		$(document).ready(function(){
-        $("#cancelorder").click(function (){
+        $(".cancelorder").click(function (){
             console.log('clicked');
             var orderid = $(this).data("id");
             var data = {
@@ -234,7 +234,7 @@
 
 
 	$(document).ready(function(){
-        $("#returnorder").click(function (){
+		$(".returnorder").click(function (){
             console.log('clicked');
             var orderid = $(this).data("id");
             var data = {
