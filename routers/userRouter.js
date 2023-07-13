@@ -67,7 +67,7 @@ user_router.post('/newuserotp',userAuth.isLogout,user_controller.newuser)
 user_router.get('/SignUpotpresend',userAuth.isLogout,user_controller.SignUpotpresend)
 
 //user product page router
-user_router.get('/shirts',userAuth.isLogin,userAuth.isBlocked,user_controller.shirtpageload)
+user_router.get('/shirts',userAuth.isBlocked,user_controller.shirtpageload)
 user_router.get('/viewproductpage',user_controller.shirtview)
 
 //user product cart
