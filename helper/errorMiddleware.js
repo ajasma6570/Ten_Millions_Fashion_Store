@@ -19,6 +19,9 @@ const notFoundHandler = (req, res, next) => {
 const errorHandler = (error, req, res, next) => {
   const status = error.status || 500;
   const message = error.message || 'Something went wrong';
+  
+  // Log the error stack trace
+  console.error(error.stack);
   res.status(status).render('error', { error: message }); // Render 'error.ejs' template with the error message
 };
 
