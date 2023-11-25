@@ -6,7 +6,7 @@ const app=express()
 app.set('view engine', 'ejs');
 
 // Set the 'views' directory to the root 'views' folder
-app.set('views', 'views','./views/userViews');
+app.set('views', './views/userViews');
 
 // Middleware to handle unhandled routes
 const notFoundHandler = (req, res, next) => {
