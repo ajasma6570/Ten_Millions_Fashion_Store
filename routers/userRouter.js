@@ -127,7 +127,7 @@ user_router.get('/logout',userAuth.isLogin,userAuth.isBlocked,user_controller.lo
 user_router.use(notFoundHandler);
 
 // Error handling middleware to display the error message
-// user_router.use(errorHandler);
+ user_router.use(errorHandler);
 
 
 module.exports=user_router  
